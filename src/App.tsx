@@ -62,6 +62,7 @@ export default function App() {
       storyTitle: 'The Magical Space Adventure',
       childName: 'Aarav',
       childAge: 5,
+      gender: 'boy',
       characterStyle: 'Classic Storybook',
       language: 'English',
       coverUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',

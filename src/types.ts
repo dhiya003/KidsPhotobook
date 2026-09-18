@@ -32,11 +32,25 @@ export type CharacterStyle =
   | 'Soft Cartoon' 
   | 'Adventure Illustration';
 
+export interface FaceSlot {
+  top: number; // Percentage from top (0-100)
+  left: number; // Percentage from left (0-100)
+  width: number; // Percentage width
+  height: number; // Percentage height
+  rotate?: number; // Rotation in degrees
+  borderRadius?: string;
+  scale?: number;
+}
+
 export interface StoryPageTemplate {
   pageNumber: number;
   sceneTitle: string;
   textTemplate: string; // contains {{childName}}, {{favoriteAnimal}}, etc.
   defaultImage: string;
+  boyImage?: string;
+  girlImage?: string;
+  boyFaceSlot?: FaceSlot;
+  girlFaceSlot?: FaceSlot;
   moralFocus?: string;
 }
 
@@ -47,6 +61,8 @@ export interface Story {
   subtitle: string;
   description: string;
   coverImage: string;
+  boyCoverImage?: string;
+  girlCoverImage?: string;
   ageRange: AgeRange;
   category: StoryCategory;
   pageCount: number;
@@ -80,6 +96,8 @@ export interface PersonalizedPage {
   sceneTitle: string;
   text: string;
   imageUrl: string;
+  genderVersion?: 'boy' | 'girl';
+  faceSlot?: FaceSlot;
   isUnlockedInPreview: boolean;
 }
 
@@ -89,8 +107,11 @@ export interface PersonalizedStoryPreview {
   storyTitle: string;
   childName: string;
   childAge: number;
+  gender: 'boy' | 'girl' | 'neutral';
   characterStyle: CharacterStyle;
   language: StoryLanguage;
+  photoUrl?: string;
+  characterFaceUrl?: string;
   coverUrl: string;
   dedicationFrom: string;
   dedicationMessage: string;
@@ -123,6 +144,15 @@ export interface Order {
   pdfDownloadUrl?: string;
 }
 
+export interface BookSpecification {
+  dimension: string;
+  pageCount: number;
+  interior: string;
+  paperType: string;
+  coverFinish: string;
+  binding: string;
+}
+
 export interface PricingPlan {
   format: BookFormat;
   title: string;
@@ -131,6 +161,7 @@ export interface PricingPlan {
   originalPrice: number;
   description: string;
   features: string[];
+  specifications?: BookSpecification;
   popular?: boolean;
 }
 

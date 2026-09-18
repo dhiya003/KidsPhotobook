@@ -53,6 +53,7 @@ export const TransformationSlider: React.FC<TransformationSliderProps> = ({ onSt
             src={activeDemo.characterUrl}
             alt={`${activeDemo.childName} as storybook character`}
             className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
           />
           <div className="absolute top-4 right-4 bg-[#162032]/85 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border border-white/20">
             <Sparkles className="w-3.5 h-3.5 text-[#F5B027]" />
@@ -71,6 +72,7 @@ export const TransformationSlider: React.FC<TransformationSliderProps> = ({ onSt
               alt={`Original photo of ${activeDemo.childName}`}
               className="absolute inset-0 w-full h-full object-cover"
               style={{ width: '100%', maxWidth: 'none' }}
+              referrerPolicy="no-referrer"
             />
             <div className="absolute top-4 left-4 bg-[#162032]/85 backdrop-blur-sm text-white px-3 py-1 rounded-full text-xs font-bold border border-white/20">
               Original Photo

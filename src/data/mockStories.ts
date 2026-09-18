@@ -7,10 +7,12 @@ export const STORIES: Story[] = [
     title: 'The Magical Space Adventure',
     subtitle: 'Your little astronaut is about to discover the universe.',
     description: 'When night falls, a constellation whispers your child’s name. Together with their favorite cosmic creature, they embark on a voyage across glittering asteroid belts, ringed planets, and swirling nebulas.',
-    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+    boyCoverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+    girlCoverImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
     ageRange: '4–6',
     category: 'Space',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -25,35 +27,55 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Starlit Bedroom',
         textTemplate: 'Up in their bedroom, {{childName}} stared out of the window into the deep velvety sky. Tonight, the North Star sparkled with an unusual golden shimmer.',
-        defaultImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+        defaultImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        boyImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        girlImage: '/src/assets/images/space_girl_window_1789746562044.jpg',
+        boyFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
         moralFocus: 'Imagination'
       },
       {
         pageNumber: 2,
         sceneTitle: 'The Golden Compass',
         textTemplate: 'Under their pillow, {{childName}} discovered a shining silver astronaut badge marked with their favorite color, {{favoriteColor}}. A soft chime sounded—the Starcruiser was waiting!',
-        defaultImage: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
+        defaultImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+        boyImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+        girlImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
+        boyFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
+        girlFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
         moralFocus: 'Adventure Begins'
       },
       {
         pageNumber: 3,
         sceneTitle: 'Meeting the Cosmic Companion',
         textTemplate: 'Floating through the rings of Saturn, {{childName}} heard a cheerful chirp. It was a friendly celestial {{favoriteAnimal}} made of stardust who nodded warmly as if they had been lifelong friends.',
-        defaultImage: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80',
+        defaultImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
+        boyImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
+        girlImage: '/src/assets/images/space_girl_planet_1789746528883.jpg',
+        boyFaceSlot: { top: 32, left: 42, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 32, left: 42, width: 22, height: 26, rotate: 0 },
         moralFocus: 'Friendship'
       },
       {
         pageNumber: 4,
         sceneTitle: 'The Whispering Moon Crater',
         textTemplate: 'Together, {{childName}} and their starlight friend hopped over craters of powdered moon-sugar, leaving glowing footprints that read: "Always Keep Wondering."',
-        defaultImage: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80',
+        defaultImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+        boyImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+        girlImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
+        boyFaceSlot: { top: 34, left: 46, width: 24, height: 28, rotate: 0 },
+        girlFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
         moralFocus: 'Discovery'
       },
       {
         pageNumber: 5,
         sceneTitle: 'Home Before Morning Glow',
         textTemplate: 'Gently steering the ship back home, {{childName}} knew that no matter how big the universe is, the greatest wonders live right inside their own brave heart.',
-        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+        defaultImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        boyImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        girlImage: '/src/assets/images/space_girl_window_1789746562044.jpg',
+        boyFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
         moralFocus: 'Security and Love'
       }
     ]
@@ -64,10 +86,12 @@ export const STORIES: Story[] = [
     title: 'The Secret Jungle Adventure',
     subtitle: 'Into the emerald canopy where ancient rivers sing.',
     description: 'Deep inside the whispering Western Ghats, a hidden waterfall calls for a brave explorer. Guided by playful langurs and wise elephants, your child learns the rhythm of nature.',
-    coverImage: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg',
+    boyCoverImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+    girlCoverImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg',
     ageRange: '4–6',
     category: 'Adventure',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Malayalam'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -82,25 +106,41 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Trail of Emerald Ferns',
         textTemplate: 'With their small explorer hat tilted just right, {{childName}} stepped onto a dewy trail shaded by giant teak trees and swaying bamboo.',
-        defaultImage: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
       },
       {
         pageNumber: 2,
         sceneTitle: 'The Elephant’s Melody',
         textTemplate: 'By the riverbend, a gentle baby elephant trumpeted softly. {{childName}} offered a sweet mango and was rewarded with a joyful splash of cool crystal water.',
-        defaultImage: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
       },
       {
         pageNumber: 3,
         sceneTitle: 'The Bridge of Vines',
         textTemplate: 'To reach the hidden temple orchid, {{childName}} balanced carefully along a singing root bridge, cheering: "Step by step, I can do anything!"',
-        defaultImage: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
       },
       {
         pageNumber: 4,
         sceneTitle: 'Firefly Lanterns',
         textTemplate: 'As twilight painted the canopy in shades of {{favoriteColor}}, thousands of tiny fireflies danced in a circle around {{childName}}, illuminating the path with golden warmth.',
-        defaultImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
+        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
       }
     ]
   },
@@ -113,7 +153,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=900&q=80',
     ageRange: '6–8',
     category: 'India',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi', 'Bengali'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -153,7 +193,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80',
     ageRange: '2–4',
     category: 'Fantasy',
-    pageCount: 20,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -187,7 +227,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=900&q=80',
     ageRange: '2–4',
     category: 'Birthday',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Bengali'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -221,7 +261,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80',
     ageRange: '2–4',
     category: 'Learning',
-    pageCount: 28,
+    pageCount: 32,
     languages: ['English', 'Hindi'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -249,7 +289,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=900&q=80',
     ageRange: '4–6',
     category: 'Adventure',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -277,7 +317,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=900&q=80',
     ageRange: '2–4',
     category: 'Learning',
-    pageCount: 20,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -305,7 +345,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=80',
     ageRange: '6–8',
     category: 'Confidence',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -333,7 +373,7 @@ export const STORIES: Story[] = [
     coverImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=900&q=80',
     ageRange: '4–6',
     category: 'Confidence',
-    pageCount: 24,
+    pageCount: 32,
     languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
     formats: ['digital', 'paperback', 'hardcover'],
     benefits: [
@@ -357,52 +397,80 @@ export const STORIES: Story[] = [
 export const INITIAL_PRICING = [
   {
     format: 'digital' as const,
-    title: 'Digital Storybook',
-    badge: 'Instant Delivery',
+    title: 'Digital Keepsake Edition',
+    badge: 'Instant PDF Delivery',
     price: 399,
     originalPrice: 699,
-    description: 'High-resolution personalized digital book ready for phones, iPads, and instant home viewing.',
+    description: 'Full 32-page high-resolution square PDF edition formatted for tablets, iPads, smartphones, and archival home printing.',
+    specifications: {
+      dimension: '8.5 × 8.5 inch',
+      pageCount: 32,
+      interior: 'Full-color interior (300 DPI)',
+      paperType: 'Digital print-ready CMYK PDF',
+      coverFinish: 'Full-color front & back cover spreads',
+      binding: 'Digital PDF eBook'
+    },
     features: [
-      'Full 24-page personalized story',
+      'Complete 32-page personalized picture book',
+      '8.5 × 8.5 inch square picture book format',
       'Custom character created from child’s photo',
-      'Personalized with name, age & favorite details',
-      'Parent dedication page included',
-      'High-res PDF download (print-quality 300 DPI)',
-      'Instant access on tablet, laptop & phone'
+      'Title, Dedication & "About our hero" pages included',
+      'Print-ready 300 DPI high-resolution PDF download',
+      'Instant access across tablets, iPads & phones'
     ],
     popular: false
   },
   {
     format: 'paperback' as const,
-    title: 'Printed Paperback',
+    title: 'Verve Studio Paperback',
     badge: 'Most Popular',
     price: 899,
     originalPrice: 1299,
-    description: 'Delightful 8x8 inch square book printed on thick satin paper with durable gloss laminated cover.',
+    description: 'Premium 8.5 × 8.5 inch square children’s book printed on thick white coated paper with a smooth matte laminated cover.',
+    specifications: {
+      dimension: '8.5 × 8.5 inch (21.59 × 21.59 cm)',
+      pageCount: 32,
+      interior: 'Full-color interior (Premium color)',
+      paperType: 'White coated paper (rich vibrant color reproduction)',
+      coverFinish: 'Matte laminated softcover',
+      binding: 'Perfect-bound paperback (Lulu standard)'
+    },
     features: [
-      'Everything in Digital Storybook included',
-      'Premium 8x8 inch softcover format',
-      '170 GSM thick satin paper (tear-resistant)',
-      'Vibrant child-safe non-toxic ink printing',
-      'Delivered across 19,000+ Indian pincodes',
-      'Free digital edition included instantly'
+      'Complete 32-page personalized picture book',
+      '8.5 × 8.5 inch standard square picture book format',
+      'Full-color interior with premium color saturation',
+      'White coated heavyweight paper (vibrant & tear-resistant)',
+      'Smooth matte laminated protective cover finish',
+      'Perfect-bound paperback binding built to lay flat',
+      'Page 3 dedication & Page 31 "About our hero" profile',
+      'Free 32-page digital PDF included immediately'
     ],
     popular: true
   },
   {
     format: 'hardcover' as const,
-    title: 'Heirloom Hardcover',
-    badge: 'Keepsake Edition',
+    title: 'Premium Edition Hardcover',
+    badge: 'Heirloom Keepsake',
     price: 1499,
     originalPrice: 2199,
-    description: 'Sturdy collector’s library casebound hardcover built to last through decades of cherished bedtime memories.',
+    description: 'Museum-grade 8.5 × 8.5 inch heirloom case-wrap hardcover book crafted on thick white coated paper with matte lamination.',
+    specifications: {
+      dimension: '8.5 × 8.5 inch (21.59 × 21.59 cm)',
+      pageCount: 32,
+      interior: 'Full-color interior (Premium color)',
+      paperType: 'White coated heavy art paper',
+      coverFinish: 'Matte laminated case-wrap cover',
+      binding: 'Sturdy library casebound hardcover'
+    },
     features: [
       'Everything in Paperback included',
-      'Sturdy 2.5mm hardbound case wrap cover',
-      'Gold foil embossed title detailing option',
-      'Luxury presentation gift box ready for giving',
-      'Special milestone keepsake certificate inside',
-      'Priority print queue & insured express shipping'
+      '8.5 × 8.5 inch heirloom case-wrap hardcover',
+      '3mm rigid library binding built to last for generations',
+      'Full-color interior on premium white coated paper',
+      'Silky matte laminated luxury cover finish',
+      'Milestone keepsake certificate & hero dedication',
+      'Presentation gift-wrap ready for birthday or festive giving',
+      'Priority print queue & insured door delivery across India'
     ],
     popular: false
   }

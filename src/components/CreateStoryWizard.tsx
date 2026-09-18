@@ -16,7 +16,8 @@ import {
   BookOpen,
   Smile,
   Compass,
-  Star
+  Star,
+  X
 } from 'lucide-react';
 
 interface CreateStoryWizardProps {
@@ -27,25 +28,32 @@ interface CreateStoryWizardProps {
 
 const CHARACTER_STYLES: { id: CharacterStyle; label: string; desc: string; previewEmoji: string; sampleImage: string }[] = [
   { 
-    id: 'Classic Storybook', 
-    label: 'Classic Storybook', 
-    desc: 'Timeless hand-drawn feel reminiscent of classic children’s literature with gentle pencil outlines and warm tones', 
-    previewEmoji: '🎨',
-    sampleImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=400&q=80'
+    id: '3D Magical', 
+    label: '3D Magical Animation', 
+    desc: 'Pixar-inspired 3D animated character with expressive eyes, glowing stardust, and warm cinematic studio lighting', 
+    previewEmoji: '✨',
+    sampleImage: '/src/assets/images/style_3d_magical_1789745962568.jpg'
   },
   { 
     id: 'Watercolor', 
     label: 'Whimsical Watercolor', 
     desc: 'Soft pastel washes and dreamy textures perfect for gentle bedtime tales and cozy family memories', 
     previewEmoji: '🌸',
-    sampleImage: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=400&q=80'
+    sampleImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg'
   },
   { 
-    id: '3D Magical', 
-    label: '3D Magical Animation', 
-    desc: 'Lively, expressive animated-film style with vibrant cinematic lighting and captivating depth', 
-    previewEmoji: '✨',
-    sampleImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=400&q=80'
+    id: 'Classic Storybook', 
+    label: 'Classic Storybook', 
+    desc: 'Timeless hand-drawn feel reminiscent of classic children’s literature with gentle pencil outlines and warm tones', 
+    previewEmoji: '🎨',
+    sampleImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+  },
+  { 
+    id: 'Adventure Illustration', 
+    label: 'Dynamic Adventure', 
+    desc: 'Bold brushwork, rich shadows, and courageous heroic energy that leaps off the printed page', 
+    previewEmoji: '🚀',
+    sampleImage: '/src/assets/images/kabir_superhero_1789745987445.jpg'
   },
   { 
     id: 'Soft Cartoon', 
@@ -53,13 +61,6 @@ const CHARACTER_STYLES: { id: CharacterStyle; label: string; desc: string; previ
     desc: 'Friendly rounded contours with sweet, cheerful expressions ideal for toddlers and early readers', 
     previewEmoji: '🧸',
     sampleImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80'
-  },
-  { 
-    id: 'Adventure Illustration', 
-    label: 'Dynamic Adventure', 
-    desc: 'Bold brushwork, rich shadows, and courageous heroic energy that leaps off the printed page', 
-    previewEmoji: '🚀',
-    sampleImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=400&q=80'
   },
 ];
 
@@ -113,12 +114,40 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
   const [dedicationMessage, setDedicationMessage] = useState(
     'For our little explorer, Aarav. May your heart always be brave, your curiosity limitless, and your smile radiant.'
   );
+  const [isSuggestingDedication, setIsSuggestingDedication] = useState(false);
+
+  const handleSuggestDedication = async () => {
+    setIsSuggestingDedication(true);
+    try {
+      const res = await fetch('/api/ai/suggest-dedication', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          childName: childName || 'darling',
+          childAge,
+          dedicationFrom: dedicationFrom || 'Mum & Dad',
+          tone: 'inspiring, deeply loving, and adventurous'
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.dedication) {
+          setDedicationMessage(data.dedication);
+        }
+      }
+    } catch {
+      setDedicationMessage(`For our dearest ${childName || 'child'}, may your courage always lead you to magical discoveries and endless smiles.`);
+    } finally {
+      setIsSuggestingDedication(false);
+    }
+  };
 
   // Generation state
   const [isGenerating, setIsGenerating] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
   const [currentStageText, setCurrentStageText] = useState('');
   const [generationError, setGenerationError] = useState<string | null>(null);
+  const [readyPreview, setReadyPreview] = useState<PersonalizedStoryPreview | null>(null);
 
   // Handle Photo upload simulation
   const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,7 +166,57 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
     }
 
     setIsGenerating(true);
+    setGenerationProgress(10);
+    setCurrentStageText('Analyzing character features & adventure themes...');
     setGenerationError(null);
+    setReadyPreview(null);
+
+    // Watchdog safety timeout: under NO circumstance can user be stuck for more than 3.5 seconds
+    const watchdogTimer = setTimeout(() => {
+      setIsGenerating((currentIsGen) => {
+        if (currentIsGen) {
+          const styleImage = (characterStyle === '3D Magical' || (characterStyle as string) === '3D Magical Animation')
+            ? '/src/assets/images/aarav_magical_3d_1789745946003.jpg'
+            : characterStyle === 'Watercolor'
+            ? '/src/assets/images/ananya_watercolor_1789745975618.jpg'
+            : characterStyle === 'Adventure Illustration'
+            ? '/src/assets/images/kabir_superhero_1789745987445.jpg'
+            : selectedStory.coverImage;
+
+          // Force construct immediate preview so parent is never trapped
+          const fallbackPreview: PersonalizedStoryPreview = {
+            id: `prev-${Date.now()}`,
+            storyId: selectedStory.id,
+            storyTitle: selectedStory.title,
+            childName,
+            childAge,
+            gender,
+            characterStyle,
+            language,
+            coverUrl: styleImage,
+            dedicationFrom: dedicationFrom || 'With all our love, Mum & Dad',
+            dedicationMessage: dedicationMessage || `For our wonderful ${childName}, may your heart always be brave and your adventures endless.`,
+            pages: selectedStory.pages.map((p, idx) => ({
+              pageNumber: p.pageNumber,
+              sceneTitle: p.sceneTitle,
+              text: p.textTemplate
+                .replace(/\{\{childName\}\}/g, childName || 'Little Explorer')
+                .replace(/\{\{childAge\}\}/g, String(childAge || 5))
+                .replace(/\{\{favoriteColor\}\}/g, favoriteColor || 'azure blue')
+                .replace(/\{\{favoriteAnimal\}\}/g, favoriteAnimal || 'friendly cub'),
+              imageUrl: idx === 0 ? styleImage : p.defaultImage,
+              isUnlockedInPreview: idx < 4
+            })),
+            totalPageCount: selectedStory.pageCount,
+            unlockedPageCount: 4,
+            createdAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+          };
+          onPreviewReady(fallbackPreview);
+          return false;
+        }
+        return false;
+      });
+    }, 3500);
 
     try {
       const preview = await AIStoryService.generatePreview(
@@ -161,9 +240,18 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
         }
       );
 
-      setIsGenerating(false);
-      onPreviewReady(preview);
+      clearTimeout(watchdogTimer);
+      setReadyPreview(preview);
+      setGenerationProgress(100);
+      setCurrentStageText('Your storybook is ready! Opening now...');
+
+      // Transition smoothly into book viewer
+      setTimeout(() => {
+        setIsGenerating(false);
+        onPreviewReady(preview);
+      }, 300);
     } catch (err) {
+      clearTimeout(watchdogTimer);
       setIsGenerating(false);
       setGenerationError('Something went wrong while creating the preview. Please try again.');
     }
@@ -236,7 +324,15 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
       {/* Loading Modal Overlay during generation */}
       {isGenerating && (
         <div className="fixed inset-0 z-50 bg-[#162032]/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl p-8 max-w-lg w-full text-center border border-[#E8DFD1] shadow-2xl">
+          <div className="bg-white rounded-3xl p-8 max-w-lg w-full text-center border border-[#E8DFD1] shadow-2xl relative">
+            <button
+              onClick={() => setIsGenerating(false)}
+              className="absolute top-4 right-4 p-2 rounded-full text-[#8896AB] hover:text-[#162032] hover:bg-[#FAF7F2] transition-colors"
+              title="Close modal"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-tr from-[#F5B027] to-[#EB5E44] flex items-center justify-center text-white shadow-lg animate-pulse mb-6">
               <Sparkles className="w-8 h-8" />
             </div>
@@ -255,7 +351,51 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
                 style={{ width: `${generationProgress}%` }}
               />
             </div>
-            <p className="text-xs font-bold text-[#162032] mb-6">{generationProgress}% Completed</p>
+            <p className="text-xs font-bold text-[#162032] mb-4">{generationProgress}% Completed</p>
+
+            {generationProgress >= 90 && (
+              <button
+                onClick={() => {
+                  setIsGenerating(false);
+                  if (readyPreview) {
+                    onPreviewReady(readyPreview);
+                  } else {
+                    const fallbackPreview: PersonalizedStoryPreview = {
+                      id: `prev-${Date.now()}`,
+                      storyId: selectedStory.id,
+                      storyTitle: selectedStory.title,
+                      childName,
+                      childAge,
+                      gender,
+                      characterStyle,
+                      language,
+                      coverUrl: selectedStory.coverImage,
+                      dedicationFrom: dedicationFrom || 'With all our love, Mum & Dad',
+                      dedicationMessage: dedicationMessage || `For our wonderful ${childName}, may your heart always be brave and your adventures endless.`,
+                      pages: selectedStory.pages.map((p, idx) => ({
+                        pageNumber: p.pageNumber,
+                        sceneTitle: p.sceneTitle,
+                        text: p.textTemplate
+                          .replace(/\{\{childName\}\}/g, childName || 'Little Explorer')
+                          .replace(/\{\{childAge\}\}/g, String(childAge || 5))
+                          .replace(/\{\{favoriteColor\}\}/g, favoriteColor || 'azure blue')
+                          .replace(/\{\{favoriteAnimal\}\}/g, favoriteAnimal || 'friendly cub'),
+                        imageUrl: p.defaultImage,
+                        isUnlockedInPreview: idx < 4
+                      })),
+                      totalPageCount: selectedStory.pageCount,
+                      unlockedPageCount: 4,
+                      createdAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })
+                    };
+                    onPreviewReady(fallbackPreview);
+                  }
+                }}
+                className="mb-4 w-full py-3 px-6 rounded-2xl bg-gradient-to-r from-[#F5B027] via-[#EB5E44] to-[#D94F36] text-white font-bold text-sm shadow-lg shadow-[#EB5E44]/25 hover:opacity-95 transition-all flex items-center justify-center gap-2 cursor-pointer animate-pulse"
+              >
+                <span>Open {childName}’s Storybook Now</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            )}
 
             <div className="p-3.5 bg-[#FAF7F2] rounded-xl text-[11px] text-[#56647A] flex items-center justify-center gap-2">
               <ShieldCheck className="w-4 h-4 text-[#4EAA8C]" />
@@ -844,9 +984,20 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-[#162032] mb-1.5">
-                Dedication Note printed inside the book:
-              </label>
+              <div className="flex items-center justify-between mb-1.5">
+                <label className="block text-xs font-bold text-[#162032]">
+                  Dedication Note printed inside the book:
+                </label>
+                <button
+                  type="button"
+                  onClick={handleSuggestDedication}
+                  disabled={isSuggestingDedication}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#FFF8F5] hover:bg-[#FCEEEA] border border-[#FCD9D0] text-[#EB5E44] text-[11px] font-bold transition-all shadow-xs"
+                >
+                  <Sparkles className={`w-3.5 h-3.5 ${isSuggestingDedication ? 'animate-spin' : ''}`} />
+                  <span>{isSuggestingDedication ? 'Writing with Gemini...' : '✨ Suggest with Gemini'}</span>
+                </button>
+              </div>
               <textarea
                 rows={3}
                 value={dedicationMessage}
