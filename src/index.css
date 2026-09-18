@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Baloo 2", "Fredoka", cursive, sans-serif;
+  --font-serif: "Fraunces", "Georgia", serif;
+  --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --color-cream: #FAF7F2;
+  --color-paper: #F6F1EA;
+  --color-ink: #162032;
+  --color-ink-muted: #56647A;
+  --color-accent-gold: #F5B027;
+  --color-accent-coral: #EB5E44;
+  --color-accent-sky: #3B97D3;
+  --color-accent-sage: #4EAA8C;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: #FAF7F2;
+  color: #162032;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+}
+
+.font-serif-story {
+  font-family: var(--font-serif);
+}
+
+/* Storybook page styling */
+.storybook-open-book {
+  background: radial-gradient(circle at 50% 0%, #FFFFFF 0%, #FBF8F3 60%, #F5EFE6 100%);
+  box-shadow: 
+    0 25px 50px -12px rgba(22, 32, 50, 0.15),
+    0 0 0 1px rgba(232, 223, 209, 0.8),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.storybook-page-left {
+  box-shadow: inset -15px 0 20px -10px rgba(0, 0, 0, 0.08);
+}
+
+.storybook-page-right {
+  box-shadow: inset 15px 0 20px -10px rgba(0, 0, 0, 0.08);
+}
+
+/* Subtle book page shadow */
+.book-shadow {
+  box-shadow: 0 10px 30px -5px rgba(22, 32, 50, 0.12), 0 4px 6px -2px rgba(22, 32, 50, 0.05);
+}
+
+.book-spine-left {
+  box-shadow: inset 12px 0 16px -8px rgba(0, 0, 0, 0.15);
+}
+
+.book-spine-right {
+  box-shadow: inset -12px 0 16px -8px rgba(0, 0, 0, 0.15);
+}

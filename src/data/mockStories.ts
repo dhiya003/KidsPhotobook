@@ -1,0 +1,409 @@
+import { Story } from '../types';
+
+export const STORIES: Story[] = [
+  {
+    id: 'magical-space-adventure',
+    slug: 'the-magical-space-adventure',
+    title: 'The Magical Space Adventure',
+    subtitle: 'Your little astronaut is about to discover the universe.',
+    description: 'When night falls, a constellation whispers your child’s name. Together with their favorite cosmic creature, they embark on a voyage across glittering asteroid belts, ringed planets, and swirling nebulas.',
+    coverImage: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+    ageRange: '4–6',
+    category: 'Space',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Encourages scientific curiosity and fascination with the night sky',
+      'Teaches gentle courage when venturing into the unknown',
+      'Reinforces problem-solving alongside friendly cosmic companions'
+    ],
+    moralObjective: 'Curiosity, Courage, and Kindness across the Stars',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Starlit Bedroom',
+        textTemplate: 'Up in their bedroom, {{childName}} stared out of the window into the deep velvety sky. Tonight, the North Star sparkled with an unusual golden shimmer.',
+        defaultImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80',
+        moralFocus: 'Imagination'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'The Golden Compass',
+        textTemplate: 'Under their pillow, {{childName}} discovered a shining silver astronaut badge marked with their favorite color, {{favoriteColor}}. A soft chime sounded—the Starcruiser was waiting!',
+        defaultImage: 'https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&w=800&q=80',
+        moralFocus: 'Adventure Begins'
+      },
+      {
+        pageNumber: 3,
+        sceneTitle: 'Meeting the Cosmic Companion',
+        textTemplate: 'Floating through the rings of Saturn, {{childName}} heard a cheerful chirp. It was a friendly celestial {{favoriteAnimal}} made of stardust who nodded warmly as if they had been lifelong friends.',
+        defaultImage: 'https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?auto=format&fit=crop&w=800&q=80',
+        moralFocus: 'Friendship'
+      },
+      {
+        pageNumber: 4,
+        sceneTitle: 'The Whispering Moon Crater',
+        textTemplate: 'Together, {{childName}} and their starlight friend hopped over craters of powdered moon-sugar, leaving glowing footprints that read: "Always Keep Wondering."',
+        defaultImage: 'https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?auto=format&fit=crop&w=800&q=80',
+        moralFocus: 'Discovery'
+      },
+      {
+        pageNumber: 5,
+        sceneTitle: 'Home Before Morning Glow',
+        textTemplate: 'Gently steering the ship back home, {{childName}} knew that no matter how big the universe is, the greatest wonders live right inside their own brave heart.',
+        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80',
+        moralFocus: 'Security and Love'
+      }
+    ]
+  },
+  {
+    id: 'secret-jungle-adventure',
+    slug: 'the-secret-jungle-adventure',
+    title: 'The Secret Jungle Adventure',
+    subtitle: 'Into the emerald canopy where ancient rivers sing.',
+    description: 'Deep inside the whispering Western Ghats, a hidden waterfall calls for a brave explorer. Guided by playful langurs and wise elephants, your child learns the rhythm of nature.',
+    coverImage: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=900&q=80',
+    ageRange: '4–6',
+    category: 'Adventure',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Malayalam'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Fosters deep love and respect for wildlife and Indian forests',
+      'Teaches mindfulness through listening to river rhythms',
+      'Celebrates teamwork with jungle animals'
+    ],
+    moralObjective: 'Respect for Nature and Peaceful Harmony',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Trail of Emerald Ferns',
+        textTemplate: 'With their small explorer hat tilted just right, {{childName}} stepped onto a dewy trail shaded by giant teak trees and swaying bamboo.',
+        defaultImage: 'https://images.unsplash.com/photo-1511497584788-87676104235f?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'The Elephant’s Melody',
+        textTemplate: 'By the riverbend, a gentle baby elephant trumpeted softly. {{childName}} offered a sweet mango and was rewarded with a joyful splash of cool crystal water.',
+        defaultImage: 'https://images.unsplash.com/photo-1557050543-4d5f4e07ef46?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 3,
+        sceneTitle: 'The Bridge of Vines',
+        textTemplate: 'To reach the hidden temple orchid, {{childName}} balanced carefully along a singing root bridge, cheering: "Step by step, I can do anything!"',
+        defaultImage: 'https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 4,
+        sceneTitle: 'Firefly Lanterns',
+        textTemplate: 'As twilight painted the canopy in shades of {{favoriteColor}}, thousands of tiny fireflies danced in a circle around {{childName}}, illuminating the path with golden warmth.',
+        defaultImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'journey-through-india',
+    slug: 'my-journey-through-india',
+    title: 'My Journey Through India',
+    subtitle: 'From snowy Himalayan peaks to tranquil Kerala backwaters.',
+    description: 'A magical heritage train named Pawan carries your child across colorful bazaars, desert dunes of Rajasthan, sunlit tea gardens of Assam, and festival celebrations full of lights.',
+    coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=900&q=80',
+    ageRange: '6–8',
+    category: 'India',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi', 'Bengali'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Celebrates India’s rich regional diversity, textiles, and traditions',
+      'Builds cultural pride and joyful geographical appreciation',
+      'Highlights unity in vibrant festivities like Diwali and Pongal'
+    ],
+    moralObjective: 'Cultural Pride, Heritage, and Warm Hospitality',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Golden Train Whistle',
+        textTemplate: 'The whistle blew with a merry tune! {{childName}} tucked their tickets into their pocket and boarded the magical express adorned with brass lanterns and marigold garlands.',
+        defaultImage: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'The Desert of Shining Stars',
+        textTemplate: 'Across the golden dunes of Jaisalmer, musicians played the folk sarangi. {{childName}} smiled as a decorated camel bowed politely to share a roasted treat.',
+        defaultImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 3,
+        sceneTitle: 'Gliding Through Palm Canals',
+        textTemplate: 'In Kerala, coconut palms bowed over the water. {{childName}} cheered as brightly colored snake boats raced past, drums beating to the joyous song of the monsoon.',
+        defaultImage: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'enchanted-dream-world',
+    slug: 'the-enchanted-dream-world',
+    title: 'The Enchanted Dream World',
+    subtitle: 'Where cloud-castles drift and bedtime turns to pure magic.',
+    description: 'When the moon tucks the sun into bed, a silver staircase appears outside your child’s window. Guided by the Dream Weaver bird, they visit valleys where wishes bloom like glowing flowers.',
+    coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80',
+    ageRange: '2–4',
+    category: 'Fantasy',
+    pageCount: 20,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Calming bedtime narrative that soothes night anxiety',
+      'Sensory imagery crafted for restful relaxation',
+      'Strengthens parental bond with sweet sleep affirmations'
+    ],
+    moralObjective: 'Peaceful Sleep, Security, and Emotional Comfort',
+    featured: false,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Silver Moon Staircase',
+        textTemplate: 'Soft lullabies drifted on the breeze. {{childName}} took the first step onto the cloud carpet, surrounded by floating feather-lanterns.',
+        defaultImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'The Pillow-Fort Castle',
+        textTemplate: 'Inside the great sleepy palace, giant lavender pillows smelled of chamomile. "Here," whispered the Dream Weaver, "every good thought becomes a pleasant tomorrow."',
+        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'my-magical-birthday',
+    slug: 'my-magical-birthday',
+    title: 'My Magical Birthday',
+    subtitle: 'A once-in-a-lifetime birthday celebration crafted just for them.',
+    description: 'All the woodland creatures, balloon makers, and confectioners gather to throw the greatest surprise birthday party for your child, celebrating all the ways they have grown this year.',
+    coverImage: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=900&q=80',
+    ageRange: '2–4',
+    category: 'Birthday',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Bengali'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Ideal birthday gift that becomes an heirloom childhood keepsake',
+      'Highlights how much love family and friends hold for the child',
+      'Personalized with their exact new age and favorite treats'
+    ],
+    moralObjective: 'Gratitude, Self-Worth, and Family Joy',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Morning Surprise',
+        textTemplate: 'Sunbeams danced across {{childName}}’s room. Today wasn’t just any day—it was the day {{childName}} turned {{childAge}} years old!',
+        defaultImage: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'The Balloon Forest',
+        textTemplate: 'Ribbons in cheerful {{favoriteColor}} floated above a towering cake layered with sweet strawberry frosting. "Hip, hip, hooray for {{childName}}!" echoed all around.',
+        defaultImage: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'first-abc-adventure',
+    slug: 'my-first-abc-adventure',
+    title: 'My First ABC Adventure',
+    subtitle: 'From Astronaut to Zephyr—letters come alive with their name.',
+    description: 'Learning letters is an exhilarating quest when each alphabet leads to a whimsical discovery starring your child and their favorite animal friends.',
+    coverImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80',
+    ageRange: '2–4',
+    category: 'Learning',
+    pageCount: 28,
+    languages: ['English', 'Hindi'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Early phonics and letter recognition linked to familiar joy',
+      'Rich alliterative poetry that delights young ears',
+      'Builds foundational pre-reading confidence'
+    ],
+    moralObjective: 'Foundational Literacy and Joy of Learning',
+    featured: false,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'A is for Adventurer',
+        textTemplate: 'A is for {{childName}}, the daring Adventurer who climbed the Apple tree to catch an Amber balloon!',
+        defaultImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'dinosaur-discovery',
+    slug: 'the-dinosaur-discovery',
+    title: 'The Dinosaur Discovery',
+    subtitle: 'Travel back in time to meet friendly prehistoric giants.',
+    description: 'Equipped with a magnifying glass and a field notebook, your little paleontologist travels back to the Jurassic era to help a lost baby Triceratops find its family.',
+    coverImage: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=900&q=80',
+    ageRange: '4–6',
+    category: 'Adventure',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Introduces prehistoric geology and fossil science playfully',
+      'Teaches empathy by caring for a lost creature',
+      'Stimulates adventurous curiosity'
+    ],
+    moralObjective: 'Scientific Observation and Compassion',
+    featured: false,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Mysterious Footprint',
+        textTemplate: 'While digging in the garden, {{childName}} uncovered a footprint three times the size of their shoe! "Quick," they exclaimed, "the prehistoric portal is open!"',
+        defaultImage: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'little-explorer',
+    slug: 'the-little-explorer',
+    title: 'The Little Explorer',
+    subtitle: 'Big wonders await right in your own backyard.',
+    description: 'You don’t need a spaceship to explore a brand-new world. With curiosity and care, your child discovers the busy city of ants, singing sparrows, and secret clover glades.',
+    coverImage: 'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=900&q=80',
+    ageRange: '2–4',
+    category: 'Learning',
+    pageCount: 20,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Encourages outdoor play and mindful observation of local fauna',
+      'Builds patience and attention to tiny everyday wonders',
+      'Strengthens nature connection away from digital screens'
+    ],
+    moralObjective: 'Patience, Wonder, and Environmental Mindfulness',
+    featured: false,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'Morning Dew Droplets',
+        textTemplate: 'The morning grass was cool and wet. {{childName}} bent down low to inspect a diamond water-drop resting upon an emerald leaf.',
+        defaultImage: 'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'when-i-grow-up',
+    slug: 'when-i-grow-up',
+    title: 'When I Grow Up',
+    subtitle: 'Doctor, pilot, artist, chef—every dream is within their reach.',
+    description: 'Your child tries on different hats in a whimsical workshop where each profession lets them use their unique talents to spread happiness to others.',
+    coverImage: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=80',
+    ageRange: '6–8',
+    category: 'Confidence',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Broadens horizons and validates boundless childhood aspirations',
+      'Highlights that any career is an opportunity to help community',
+      'Builds unshakable confidence in their own unique potential'
+    ],
+    moralObjective: 'Self-Belief, Ambition, and Community Service',
+    featured: false,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Mirror of Possibilities',
+        textTemplate: 'Standing tall in front of the mirror, {{childName}} smiled. "Tomorrow holds so many adventures. Which dream shall I explore first?"',
+        defaultImage: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  },
+  {
+    id: 'my-superhero-adventure',
+    slug: 'my-superhero-adventure',
+    title: 'My Superhero Adventure',
+    subtitle: 'The greatest superpower of all is a kind and helping heart.',
+    description: 'When the city clock tower loses its sparkle, your child dons their personalized hero cape. Their superpower isn’t laser vision—it’s kindness, clever teamwork, and spreading smiles.',
+    coverImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=900&q=80',
+    ageRange: '4–6',
+    category: 'Confidence',
+    pageCount: 24,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
+    formats: ['digital', 'paperback', 'hardcover'],
+    benefits: [
+      'Redefines heroism around empathy, bravery, and helping friends',
+      'Empowers shy children to speak up and lead with warmth',
+      'Action-packed while entirely non-violent and uplifting'
+    ],
+    moralObjective: 'Kindness, Teamwork, and Everyday Courage',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Cape of Kindness',
+        textTemplate: 'Fastened with a gold pin, {{childName}}’s cape fluttered in the breeze. "Whenever someone needs a helping hand," they declared, "I am ready!"',
+        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80'
+      }
+    ]
+  }
+];
+
+export const INITIAL_PRICING = [
+  {
+    format: 'digital' as const,
+    title: 'Digital Storybook',
+    badge: 'Instant Delivery',
+    price: 399,
+    originalPrice: 699,
+    description: 'High-resolution personalized digital book ready for phones, iPads, and instant home viewing.',
+    features: [
+      'Full 24-page personalized story',
+      'Custom character created from child’s photo',
+      'Personalized with name, age & favorite details',
+      'Parent dedication page included',
+      'High-res PDF download (print-quality 300 DPI)',
+      'Instant access on tablet, laptop & phone'
+    ],
+    popular: false
+  },
+  {
+    format: 'paperback' as const,
+    title: 'Printed Paperback',
+    badge: 'Most Popular',
+    price: 899,
+    originalPrice: 1299,
+    description: 'Delightful 8x8 inch square book printed on thick satin paper with durable gloss laminated cover.',
+    features: [
+      'Everything in Digital Storybook included',
+      'Premium 8x8 inch softcover format',
+      '170 GSM thick satin paper (tear-resistant)',
+      'Vibrant child-safe non-toxic ink printing',
+      'Delivered across 19,000+ Indian pincodes',
+      'Free digital edition included instantly'
+    ],
+    popular: true
+  },
+  {
+    format: 'hardcover' as const,
+    title: 'Heirloom Hardcover',
+    badge: 'Keepsake Edition',
+    price: 1499,
+    originalPrice: 2199,
+    description: 'Sturdy collector’s library casebound hardcover built to last through decades of cherished bedtime memories.',
+    features: [
+      'Everything in Paperback included',
+      'Sturdy 2.5mm hardbound case wrap cover',
+      'Gold foil embossed title detailing option',
+      'Luxury presentation gift box ready for giving',
+      'Special milestone keepsake certificate inside',
+      'Priority print queue & insured express shipping'
+    ],
+    popular: false
+  }
+];
