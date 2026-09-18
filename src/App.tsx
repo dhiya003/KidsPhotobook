@@ -65,7 +65,7 @@ export default function App() {
       gender: 'boy',
       characterStyle: 'Classic Storybook',
       language: 'English',
-      coverUrl: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=900&q=80',
+      coverUrl: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
       dedicationFrom: 'Amma & Appa',
       dedicationMessage: 'For our brave little astronaut, Aarav. May your curiosity always take you beyond the stars.',
       pages: STORIES[0].pages.map((p, idx) => ({
@@ -75,7 +75,7 @@ export default function App() {
         imageUrl: p.defaultImage,
         isUnlockedInPreview: idx < 4
       })),
-      totalPageCount: 24,
+      totalPageCount: 32,
       unlockedPageCount: 4,
       createdAt: '18 Sep 2026'
     }

@@ -46,7 +46,7 @@ const CHARACTER_STYLES: { id: CharacterStyle; label: string; desc: string; previ
     label: 'Classic Storybook', 
     desc: 'Timeless hand-drawn feel reminiscent of classic children’s literature with gentle pencil outlines and warm tones', 
     previewEmoji: '🎨',
-    sampleImage: 'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=400&q=80'
+    sampleImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg'
   },
   { 
     id: 'Adventure Illustration', 
@@ -60,7 +60,7 @@ const CHARACTER_STYLES: { id: CharacterStyle; label: string; desc: string; previ
     label: 'Soft Playful Cartoon', 
     desc: 'Friendly rounded contours with sweet, cheerful expressions ideal for toddlers and early readers', 
     previewEmoji: '🧸',
-    sampleImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=400&q=80'
+    sampleImage: '/src/assets/images/space_girl_scene_1789746496237.jpg'
   },
 ];
 
@@ -101,7 +101,7 @@ export const CreateStoryWizard: React.FC<CreateStoryWizardProps> = ({
 
   // Step 4: Photo & Consent
   const [photoUrl, setPhotoUrl] = useState<string>(
-    'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=600&q=80'
+    '/src/assets/images/kid_boy_aarav_1789747514421.jpg'
   );
   const [hasParentalConsent, setHasParentalConsent] = useState(true);
 

@@ -150,7 +150,7 @@ export const STORIES: Story[] = [
     title: 'My Journey Through India',
     subtitle: 'From snowy Himalayan peaks to tranquil Kerala backwaters.',
     description: 'A magical heritage train named Pawan carries your child across colorful bazaars, desert dunes of Rajasthan, sunlit tea gardens of Assam, and festival celebrations full of lights.',
-    coverImage: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/india_train_animated_1789747625174.jpg',
     ageRange: '6–8',
     category: 'India',
     pageCount: 32,
@@ -168,19 +168,19 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Golden Train Whistle',
         textTemplate: 'The whistle blew with a merry tune! {{childName}} tucked their tickets into their pocket and boarded the magical express adorned with brass lanterns and marigold garlands.',
-        defaultImage: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/india_train_animated_1789747625174.jpg'
       },
       {
         pageNumber: 2,
         sceneTitle: 'The Desert of Shining Stars',
         textTemplate: 'Across the golden dunes of Jaisalmer, musicians played the folk sarangi. {{childName}} smiled as a decorated camel bowed politely to share a roasted treat.',
-        defaultImage: 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/india_train_animated_1789747625174.jpg'
       },
       {
         pageNumber: 3,
         sceneTitle: 'Gliding Through Palm Canals',
         textTemplate: 'In Kerala, coconut palms bowed over the water. {{childName}} cheered as brightly colored snake boats raced past, drums beating to the joyous song of the monsoon.',
-        defaultImage: 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg'
       }
     ]
   },
@@ -190,7 +190,7 @@ export const STORIES: Story[] = [
     title: 'The Enchanted Dream World',
     subtitle: 'Where cloud-castles drift and bedtime turns to pure magic.',
     description: 'When the moon tucks the sun into bed, a silver staircase appears outside your child’s window. Guided by the Dream Weaver bird, they visit valleys where wishes bloom like glowing flowers.',
-    coverImage: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/dream_world_animated_1789747644910.jpg',
     ageRange: '2–4',
     category: 'Fantasy',
     pageCount: 32,
@@ -208,13 +208,13 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Silver Moon Staircase',
         textTemplate: 'Soft lullabies drifted on the breeze. {{childName}} took the first step onto the cloud carpet, surrounded by floating feather-lanterns.',
-        defaultImage: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/dream_world_animated_1789747644910.jpg'
       },
       {
         pageNumber: 2,
         sceneTitle: 'The Pillow-Fort Castle',
         textTemplate: 'Inside the great sleepy palace, giant lavender pillows smelled of chamomile. "Here," whispered the Dream Weaver, "every good thought becomes a pleasant tomorrow."',
-        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/space_girl_scene_1789746496237.jpg'
       }
     ]
   },
@@ -224,7 +224,7 @@ export const STORIES: Story[] = [
     title: 'My Magical Birthday',
     subtitle: 'A once-in-a-lifetime birthday celebration crafted just for them.',
     description: 'All the woodland creatures, balloon makers, and confectioners gather to throw the greatest surprise birthday party for your child, celebrating all the ways they have grown this year.',
-    coverImage: 'https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/birthday_animated_1789747658427.jpg',
     ageRange: '2–4',
     category: 'Birthday',
     pageCount: 32,
@@ -242,13 +242,13 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Morning Surprise',
         textTemplate: 'Sunbeams danced across {{childName}}’s room. Today wasn’t just any day—it was the day {{childName}} turned {{childAge}} years old!',
-        defaultImage: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/birthday_animated_1789747658427.jpg'
       },
       {
         pageNumber: 2,
         sceneTitle: 'The Balloon Forest',
         textTemplate: 'Ribbons in cheerful {{favoriteColor}} floated above a towering cake layered with sweet strawberry frosting. "Hip, hip, hooray for {{childName}}!" echoed all around.',
-        defaultImage: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/birthday_animated_1789747658427.jpg'
       }
     ]
   },
@@ -258,7 +258,7 @@ export const STORIES: Story[] = [
     title: 'My First ABC Adventure',
     subtitle: 'From Astronaut to Zephyr—letters come alive with their name.',
     description: 'Learning letters is an exhilarating quest when each alphabet leads to a whimsical discovery starring your child and their favorite animal friends.',
-    coverImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/kabir_superhero_1789745987445.jpg',
     ageRange: '2–4',
     category: 'Learning',
     pageCount: 32,
@@ -276,7 +276,7 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'A is for Adventurer',
         textTemplate: 'A is for {{childName}}, the daring Adventurer who climbed the Apple tree to catch an Amber balloon!',
-        defaultImage: 'https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/kabir_superhero_1789745987445.jpg'
       }
     ]
   },
@@ -286,7 +286,7 @@ export const STORIES: Story[] = [
     title: 'The Dinosaur Discovery',
     subtitle: 'Travel back in time to meet friendly prehistoric giants.',
     description: 'Equipped with a magnifying glass and a field notebook, your little paleontologist travels back to the Jurassic era to help a lost baby Triceratops find its family.',
-    coverImage: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/dino_animated_1789747671931.jpg',
     ageRange: '4–6',
     category: 'Adventure',
     pageCount: 32,
@@ -304,7 +304,7 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Mysterious Footprint',
         textTemplate: 'While digging in the garden, {{childName}} uncovered a footprint three times the size of their shoe! "Quick," they exclaimed, "the prehistoric portal is open!"',
-        defaultImage: 'https://images.unsplash.com/photo-1570481662006-a3a1374699e8?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/dino_animated_1789747671931.jpg'
       }
     ]
   },
@@ -314,7 +314,7 @@ export const STORIES: Story[] = [
     title: 'The Little Explorer',
     subtitle: 'Big wonders await right in your own backyard.',
     description: 'You don’t need a spaceship to explore a brand-new world. With curiosity and care, your child discovers the busy city of ants, singing sparrows, and secret clover glades.',
-    coverImage: 'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
     ageRange: '2–4',
     category: 'Learning',
     pageCount: 32,
@@ -332,7 +332,7 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'Morning Dew Droplets',
         textTemplate: 'The morning grass was cool and wet. {{childName}} bent down low to inspect a diamond water-drop resting upon an emerald leaf.',
-        defaultImage: 'https://images.unsplash.com/photo-1476820865390-c52aeebb9891?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg'
       }
     ]
   },
@@ -342,7 +342,7 @@ export const STORIES: Story[] = [
     title: 'When I Grow Up',
     subtitle: 'Doctor, pilot, artist, chef—every dream is within their reach.',
     description: 'Your child tries on different hats in a whimsical workshop where each profession lets them use their unique talents to spread happiness to others.',
-    coverImage: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
     ageRange: '6–8',
     category: 'Confidence',
     pageCount: 32,
@@ -360,7 +360,7 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Mirror of Possibilities',
         textTemplate: 'Standing tall in front of the mirror, {{childName}} smiled. "Tomorrow holds so many adventures. Which dream shall I explore first?"',
-        defaultImage: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg'
       }
     ]
   },
@@ -370,7 +370,7 @@ export const STORIES: Story[] = [
     title: 'My Superhero Adventure',
     subtitle: 'The greatest superpower of all is a kind and helping heart.',
     description: 'When the city clock tower loses its sparkle, your child dons their personalized hero cape. Their superpower isn’t laser vision—it’s kindness, clever teamwork, and spreading smiles.',
-    coverImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=900&q=80',
+    coverImage: '/src/assets/images/kabir_superhero_1789745987445.jpg',
     ageRange: '4–6',
     category: 'Confidence',
     pageCount: 32,
@@ -388,7 +388,7 @@ export const STORIES: Story[] = [
         pageNumber: 1,
         sceneTitle: 'The Cape of Kindness',
         textTemplate: 'Fastened with a gold pin, {{childName}}’s cape fluttered in the breeze. "Whenever someone needs a helping hand," they declared, "I am ready!"',
-        defaultImage: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80'
+        defaultImage: '/src/assets/images/kabir_superhero_1789745987445.jpg'
       }
     ]
   }

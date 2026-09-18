@@ -28,9 +28,12 @@ interface DemoTransformation {
   id: string;
   childName: string;
   childAge: number;
+  gender: 'boy' | 'girl';
   city: string;
   photoUrl: string;
+  avatarUrl: string;
   illustrationUrl: string;
+  mockupUrl: string;
   storyTitle: string;
   storyCategory: string;
   storyId: string;
@@ -44,9 +47,12 @@ const DEMO_TRANSFORMATIONS: DemoTransformation[] = [
     id: 'aarav-space',
     childName: 'Aarav',
     childAge: 5,
+    gender: 'boy',
     city: 'Bengaluru',
-    photoUrl: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=700&q=80',
-    illustrationUrl: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=700&q=80',
+    photoUrl: '/src/assets/images/kid_boy_aarav_1789747514421.jpg',
+    avatarUrl: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+    illustrationUrl: '/src/assets/images/space_boy_scene_1789746467006.jpg',
+    mockupUrl: '/src/assets/images/storybook_mockup_animated_1789747788784.jpg',
     storyTitle: 'The Magical Space Adventure',
     storyCategory: 'Space',
     storyId: 'magical-space-adventure',
@@ -58,9 +64,12 @@ const DEMO_TRANSFORMATIONS: DemoTransformation[] = [
     id: 'ananya-jungle',
     childName: 'Ananya',
     childAge: 4,
+    gender: 'girl',
     city: 'Chennai',
-    photoUrl: 'https://images.unsplash.com/photo-1595454223600-91fb57cb4841?auto=format&fit=crop&w=700&q=80',
-    illustrationUrl: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=700&q=80',
+    photoUrl: '/src/assets/images/kid_girl_ananya_1789747526723.jpg',
+    avatarUrl: '/src/assets/images/ananya_star_girl_1789745967005.jpg',
+    illustrationUrl: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+    mockupUrl: '/src/assets/images/jungle_book_mockup_1789747803839.jpg',
     storyTitle: 'The Secret Jungle Adventure',
     storyCategory: 'Jungle',
     storyId: 'secret-jungle-adventure',
@@ -72,9 +81,12 @@ const DEMO_TRANSFORMATIONS: DemoTransformation[] = [
     id: 'kabir-india',
     childName: 'Kabir',
     childAge: 6,
+    gender: 'boy',
     city: 'Mumbai',
-    photoUrl: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?auto=format&fit=crop&w=700&q=80',
-    illustrationUrl: 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=700&q=80',
+    photoUrl: '/src/assets/images/kid_boy_kabir_1789747544716.jpg',
+    avatarUrl: '/src/assets/images/kabir_superhero_1789745987445.jpg',
+    illustrationUrl: '/src/assets/images/india_train_animated_1789747625174.jpg',
+    mockupUrl: '/src/assets/images/book_3d_mockup_1789747500669.jpg',
     storyTitle: 'My Journey Through India',
     storyCategory: 'India',
     storyId: 'journey-through-india',
@@ -86,9 +98,12 @@ const DEMO_TRANSFORMATIONS: DemoTransformation[] = [
     id: 'meera-magic',
     childName: 'Meera',
     childAge: 4,
+    gender: 'girl',
     city: 'Hyderabad',
-    photoUrl: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?auto=format&fit=crop&w=700&q=80',
-    illustrationUrl: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=700&q=80',
+    photoUrl: '/src/assets/images/kid_girl_meera_1789747560780.jpg',
+    avatarUrl: '/src/assets/images/meera_fairytale_1789746005728.jpg',
+    illustrationUrl: '/src/assets/images/dream_world_animated_1789747644910.jpg',
+    mockupUrl: '/src/assets/images/book_3d_mockup_1789747500669.jpg',
     storyTitle: 'The Enchanted Dream World',
     storyCategory: 'Magic',
     storyId: 'enchanted-dream-world',
@@ -106,6 +121,8 @@ export const MagicalStorybookHome: React.FC<MagicalStorybookHomeProps> = ({
 }) => {
   const [selectedDemoIndex, setSelectedDemoIndex] = useState(0);
   const [activeStepTab, setActiveStepTab] = useState<number>(1);
+  const [mockupViewMode, setMockupViewMode] = useState<'mockup' | 'scene'>('mockup');
+  const [photoViewMode, setPhotoViewMode] = useState<'photo' | 'avatar'>('photo');
   const currentDemo = DEMO_TRANSFORMATIONS[selectedDemoIndex];
 
   // Category pills mapping
@@ -213,17 +230,44 @@ export const MagicalStorybookHome: React.FC<MagicalStorybookHomeProps> = ({
 
             {/* The Visual Transformation Spread */}
             <div className="grid grid-cols-1 md:grid-cols-11 gap-4 sm:gap-6 items-center">
-              {/* LEFT: [ child photo ] */}
+              {/* LEFT: [ child photo or 3D animated avatar ] */}
               <div className="md:col-span-5 flex flex-col items-center">
-                <div className="w-full max-w-[280px] bg-[#FAF7F2] p-3 rounded-2xl border border-[#E8DFD1] shadow-sm transform -rotate-1 hover:rotate-0 transition-transform">
+                <div className="w-full max-w-[290px] bg-[#FAF7F2] p-3.5 rounded-2xl border border-[#E8DFD1] shadow-sm transform -rotate-1 hover:rotate-0 transition-transform">
+                  {/* Photo toggle mode pills */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="inline-flex rounded-lg bg-white p-0.5 border border-[#E8DFD1] shadow-2xs">
+                      <button
+                        onClick={() => setPhotoViewMode('photo')}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                          photoViewMode === 'photo'
+                            ? 'bg-[#162032] text-white'
+                            : 'text-[#56647A] hover:text-[#162032]'
+                        }`}
+                      >
+                        Child Photo
+                      </button>
+                      <button
+                        onClick={() => setPhotoViewMode('avatar')}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                          photoViewMode === 'avatar'
+                            ? 'bg-[#162032] text-white'
+                            : 'text-[#56647A] hover:text-[#162032]'
+                        }`}
+                      >
+                        3D Face
+                      </button>
+                    </div>
+                    <span className="text-[10px] text-[#8896AB] font-semibold">{currentDemo.city}</span>
+                  </div>
+
                   <div className="aspect-square rounded-xl overflow-hidden mb-2.5 bg-[#162032] relative group">
                     <img
-                      src={currentDemo.photoUrl}
-                      alt={`${currentDemo.childName} real photo`}
+                      src={photoViewMode === 'photo' ? currentDemo.photoUrl : currentDemo.avatarUrl}
+                      alt={`${currentDemo.childName} photo`}
                       className="w-full h-full object-cover"
                     />
-                    <div className="absolute top-2 left-2 px-2.5 py-1 rounded-md bg-white/90 backdrop-blur-sm text-[11px] font-bold text-[#162032] shadow-xs">
-                      Child Photo
+                    <div className="absolute top-2 left-2 px-2.5 py-1 rounded-md bg-white/95 backdrop-blur-sm text-[11px] font-bold text-[#162032] shadow-xs">
+                      {photoViewMode === 'photo' ? 'Child Photo' : '✨ 3D Character'}
                     </div>
                   </div>
                   <div className="text-center pt-1">
@@ -248,21 +292,49 @@ export const MagicalStorybookHome: React.FC<MagicalStorybookHomeProps> = ({
                   <div className="hidden md:block absolute -bottom-4 left-1/2 -translate-x-1/2 text-[#EB5E44] text-xs">✦</div>
                 </div>
                 <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#EB5E44] mt-2 text-center whitespace-nowrap">
-                  AI Recreates Face
+                  Animated Magic
                 </span>
               </div>
 
-              {/* RIGHT: [ storybook illustration ] */}
+              {/* RIGHT: [ 3D Animated Storybook Mockup or Scene ] */}
               <div className="md:col-span-5 flex flex-col items-center">
-                <div className="w-full max-w-[280px] bg-[#FAF7F2] p-3 rounded-2xl border-2 border-[#EB5E44]/30 shadow-md transform rotate-1 hover:rotate-0 transition-transform">
+                <div className="w-full max-w-[290px] bg-[#FAF7F2] p-3.5 rounded-2xl border-2 border-[#EB5E44]/30 shadow-md transform rotate-1 hover:rotate-0 transition-transform">
+                  {/* Animated Mockup view toggle pills */}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="inline-flex rounded-lg bg-white p-0.5 border border-[#E8DFD1] shadow-2xs">
+                      <button
+                        onClick={() => setMockupViewMode('mockup')}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                          mockupViewMode === 'mockup'
+                            ? 'bg-[#EB5E44] text-white'
+                            : 'text-[#56647A] hover:text-[#162032]'
+                        }`}
+                      >
+                        3D Book Mockup
+                      </button>
+                      <button
+                        onClick={() => setMockupViewMode('scene')}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                          mockupViewMode === 'scene'
+                            ? 'bg-[#EB5E44] text-white'
+                            : 'text-[#56647A] hover:text-[#162032]'
+                        }`}
+                      >
+                        Story Scene
+                      </button>
+                    </div>
+                    <span className="text-[10px] text-[#EB5E44] font-bold">8.5" × 8.5"</span>
+                  </div>
+
                   <div className="aspect-square rounded-xl overflow-hidden mb-2.5 bg-[#162032] relative">
                     <img
-                      src={currentDemo.illustrationUrl}
-                      alt={`${currentDemo.childName} illustrated storybook character`}
+                      src={mockupViewMode === 'mockup' ? currentDemo.mockupUrl : currentDemo.illustrationUrl}
+                      alt={`${currentDemo.childName} animated storybook`}
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute top-2 right-2 px-2.5 py-1 rounded-md bg-[#EB5E44] text-white text-[11px] font-bold shadow-xs flex items-center gap-1">
-                      <Sparkles className="w-3 h-3 fill-white" /> Storybook Hero
+                      <Sparkles className="w-3 h-3 fill-white" />
+                      {mockupViewMode === 'mockup' ? '3D Animated Mockup' : 'Storybook Hero'}
                     </div>
                   </div>
                   <div className="text-center pt-1">
@@ -270,7 +342,7 @@ export const MagicalStorybookHome: React.FC<MagicalStorybookHomeProps> = ({
                       {currentDemo.storyTitle}
                     </p>
                     <p className="text-[11px] text-[#EB5E44] font-semibold">
-                      Full Color 24-Page Personalized Book
+                      Full Color 32-Page Personalized Hardcover
                     </p>
                   </div>
                 </div>
