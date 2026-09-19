@@ -1,625 +1,1070 @@
 import React, { useState } from 'react';
-import { PersonalizedStoryPreview, BookFormat, PersonalizedPage } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
+import { PersonalizedStoryPreview, Order } from '../types';
 import { INITIAL_PRICING } from '../data/mockStories';
-import { PersonalizedFaceComposite } from './PersonalizedFaceComposite';
 import { 
   Sparkles, 
+  ArrowLeft, 
+  ArrowRight, 
   ChevronLeft, 
   ChevronRight, 
-  Lock, 
+  QrCode, 
+  Play, 
   Check, 
-  Download, 
-  BookOpen, 
-  ShieldCheck,
-  Share2,
-  Heart,
-  UserCheck,
-  Eye,
-  Sliders
+  X, 
+  CheckCircle2, 
+  MessageSquarePlus, 
+  Shield, 
+  MapPin, 
+  Grid,
+  BookOpen,
+  Volume2
 } from 'lucide-react';
 
 interface BookPreviewViewerProps {
   preview: PersonalizedStoryPreview;
-  onUnlockStory: (format: BookFormat, preview: PersonalizedStoryPreview) => void;
-  onEditDetails: () => void;
+  onBack: () => void;
+  onOrderSuccess: (order: Order) => void;
+  onUpdatePreview?: (updated: PersonalizedStoryPreview) => void;
 }
 
 export const BookPreviewViewer: React.FC<BookPreviewViewerProps> = ({
   preview,
-  onUnlockStory,
-  onEditDetails
+  onBack,
+  onOrderSuccess,
 }) => {
-  // Current page index: 0 = Page 1 (Cover), 1 = Page 2 (Title), 2 = Page 3 (Dedication), 3..28 = Story, 29 = Ending, 30 = About Hero, 31 = End Page
-  const [currentPageIndex, setCurrentPageIndex] = useState(0);
-  const [selectedFormat, setSelectedFormat] = useState<BookFormat>('paperback');
-  
-  // Dynamic Gender Version & Face Replacement States
-  const [activeGender, setActiveGender] = useState<'boy' | 'girl'>(
-    preview.gender === 'girl' ? 'girl' : 'boy'
-  );
-  const [showFaceReplacement, setShowFaceReplacement] = useState<boolean>(true);
+  // Mode: 'preview' (Free 3-spread preview), 'full-book' (32-page review), 'checkout' (package selection)
+  const [viewState, setViewState] = useState<'preview' | 'full-book' | 'checkout'>('preview');
 
-  const totalPages = preview.pages.length > 0 ? preview.pages.length : 32;
-  const currentPage = preview.pages[currentPageIndex] || {
-    pageNumber: currentPageIndex + 1,
-    sceneTitle: `Page ${currentPageIndex + 1}`,
-    text: '',
-    imageUrl: preview.coverUrl,
-    isUnlockedInPreview: currentPageIndex < 5
-  };
+  // Full-book view mode: 'flip-reader' (2-page physical spread) vs 'grid' (all 32 pages)
+  const [fullBookMode, setFullBookMode] = useState<'flip-reader' | 'grid'>('flip-reader');
 
-  // Helper to dynamically resolve Boy or Girl illustration for any page
-  const getPageImageForGender = (page: PersonalizedPage, targetGender: 'boy' | 'girl'): string => {
-    let url = page.imageUrl || preview.coverUrl;
-    if (targetGender === 'girl') {
-      url = url.replace('space_boy_window', 'space_girl_window')
-               .replace('space_boy_scene', 'space_girl_scene')
-               .replace('space_boy_planet', 'space_girl_planet')
-               .replace('jungle_boy_trail', 'jungle_girl_trail')
-               .replace('aarav_magical_3d', 'space_girl_scene')
-               .replace('kabir_superhero', 'space_girl_scene');
-    } else {
-      url = url.replace('space_girl_window', 'space_boy_window')
-               .replace('space_girl_scene', 'space_boy_scene')
-               .replace('space_girl_planet', 'space_boy_planet')
-               .replace('jungle_girl_trail', 'jungle_boy_trail')
-               .replace('ananya_watercolor', 'aarav_magical_3d');
+  // Preview spread index & flip direction
+  const [activeSpreadIndex, setActiveSpreadIndex] = useState(0);
+  const [fullBookSpreadIndex, setFullBookSpreadIndex] = useState(0);
+  const [flipDirection, setFlipDirection] = useState<1 | -1>(1);
+
+  // Modals
+  const [isArModalOpen, setIsArModalOpen] = useState(false);
+  const [isPlayingAr, setIsPlayingAr] = useState(false);
+  const [isChangeModalOpen, setIsChangeModalOpen] = useState(false);
+  const [changeText, setChangeText] = useState('');
+  const [changeSubmitted, setChangeSubmitted] = useState(false);
+  const [zoomPage, setZoomPage] = useState<number | null>(null);
+
+  // Checkout state
+  const [selectedFormat, setSelectedFormat] = useState<string>('hardcover');
+  const [arAddon, setArAddon] = useState<boolean>(true);
+  const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [orderComplete, setOrderComplete] = useState(false);
+
+  // Build 32 spreads
+  const titles = [
+    'The Starlight Bedroom', 'The Ancient Galactic Map', 'The Starlight Cruiser',
+    'Entering the Nebula Ring', 'The Singing Crystals', 'Meeting the Cosmic Fox',
+    'The Glowing Lantern', 'Charting the Comet', 'The Asteroid Garden',
+    'The Lost Star Whispers', 'A Gentle Heart of Courage', 'The Celestial Aurora',
+    'Safe Journey Home to Bed', 'The Hero of the Stars'
+  ];
+
+  const isBoy = preview.gender === 'boy';
+  const defaultSpreadImage = isBoy 
+    ? '/src/assets/images/space_boy_scene_1789746482524.jpg' 
+    : '/src/assets/images/space_girl_scene_1789746496237.jpg';
+
+  const windowSpreadImage = isBoy 
+    ? '/src/assets/images/space_boy_window_1789746542329.jpg' 
+    : '/src/assets/images/space_girl_window_1789746562044.jpg';
+
+  const planetSpreadImage = isBoy 
+    ? '/src/assets/images/space_boy_planet_1789746509818.jpg' 
+    : '/src/assets/images/space_girl_planet_1789746528883.jpg';
+
+  const spreads = Array.from({ length: 32 }, (_, idx) => {
+    const pageNum = idx + 1;
+    const existing = preview.pages.find(p => p.pageNumber === pageNum);
+    if (existing) {
+      return {
+        pageNumber: existing.pageNumber,
+        sceneTitle: existing.sceneTitle,
+        text: existing.text,
+        imageUrl: existing.imageUrl,
+      };
     }
-    return url;
+
+    let img = defaultSpreadImage;
+    if (pageNum === 1 || pageNum === 2) {
+      img = windowSpreadImage;
+    } else if (pageNum % 3 === 0) {
+      img = planetSpreadImage;
+    }
+
+    return {
+      pageNumber: pageNum,
+      sceneTitle: titles[(pageNum - 1) % titles.length] || `Chapter ${pageNum}`,
+      text: `One quiet evening, ${preview.childName} discovered that true bravery comes from listening with kindness and dreaming big.`,
+      imageUrl: img,
+    };
+  });
+
+  // Top 3 preview spreads
+  const sampleSpreads = [
+    {
+      title: `Meet ${preview.childName}`,
+      sub: 'The brave explorer!',
+      text: `Every big adventure starts with a curious question. One evening in Bengaluru, ${preview.childName} spotted a brilliant sapphire star dancing across the sky.`,
+      image: windowSpreadImage
+    },
+    {
+      title: 'The Starlight Vessel',
+      sub: 'Preparing for launch',
+      text: `With a trusty compass and a warm heart, ${preview.childName} stepped aboard the Starlight Cruiser ready to chart the forgotten galaxy.`,
+      image: defaultSpreadImage
+    },
+    {
+      title: 'The Crystal Planet',
+      sub: 'Singing violet crystals',
+      text: `On a glowing violet moon, singing crystals chimed a melody of friendship every time ${preview.childName} smiled.`,
+      image: planetSpreadImage
+    }
+  ];
+
+  // Full-book paired spreads: 16 spreads (pages 1-2, 3-4, 5-6, ... 31-32)
+  const pairedSpreads = Array.from({ length: 16 }, (_, idx) => {
+    const leftPage = spreads[idx * 2];
+    const rightPage = spreads[idx * 2 + 1];
+    return {
+      spreadIndex: idx,
+      left: leftPage,
+      right: rightPage
+    };
+  });
+
+  // Page Flip Animation Variants for realistic 3D physical book feel
+  const pageFlipVariants = {
+    enter: (direction: number) => ({
+      rotateY: direction > 0 ? 35 : -35,
+      opacity: 0,
+      scale: 0.97,
+      boxShadow: direction > 0 ? '-25px 0 35px rgba(0,0,0,0.15)' : '25px 0 35px rgba(0,0,0,0.15)'
+    }),
+    center: {
+      rotateY: 0,
+      opacity: 1,
+      scale: 1,
+      boxShadow: '0 20px 40px -15px rgba(0,0,0,0.12)',
+      transition: {
+        duration: 0.45,
+        ease: 'easeInOut' as const
+      }
+    },
+    exit: (direction: number) => ({
+      rotateY: direction > 0 ? -35 : 35,
+      opacity: 0,
+      scale: 0.97,
+      boxShadow: direction > 0 ? '25px 0 35px rgba(0,0,0,0.15)' : '-25px 0 35px rgba(0,0,0,0.15)',
+      transition: {
+        duration: 0.35,
+        ease: 'easeInOut' as const
+      }
+    })
   };
 
-  const getPageCategoryLabel = (idx: number): string => {
-    if (idx === 0) return 'Cover (Page 1)';
-    if (idx === 1) return 'Title Page (Page 2)';
-    if (idx === 2) return 'Dedication (Page 3)';
-    if (idx >= 3 && idx <= 4) return `Story (Page ${idx + 1})`;
-    if (idx >= 5 && idx <= 28) return `Story (Page ${idx + 1} 🔒)`;
-    if (idx === 29) return 'Ending (Page 30 🔒)';
-    if (idx === 30) return 'About Our Hero (Page 31 🔒)';
-    return 'End Page & Imprint (Page 32 🔒)';
+  const handleNextSpread = () => {
+    if (activeSpreadIndex < sampleSpreads.length - 1) {
+      setFlipDirection(1);
+      setActiveSpreadIndex(prev => prev + 1);
+    }
   };
 
-  // Character Face to use for composite replacement
-  const characterFaceUrl = preview.characterFaceUrl || preview.photoUrl;
+  const handlePrevSpread = () => {
+    if (activeSpreadIndex > 0) {
+      setFlipDirection(-1);
+      setActiveSpreadIndex(prev => prev - 1);
+    }
+  };
+
+  const handleNextFullSpread = () => {
+    if (fullBookSpreadIndex < pairedSpreads.length - 1) {
+      setFlipDirection(1);
+      setFullBookSpreadIndex(prev => prev + 1);
+    }
+  };
+
+  const handlePrevFullSpread = () => {
+    if (fullBookSpreadIndex > 0) {
+      setFlipDirection(-1);
+      setFullBookSpreadIndex(prev => prev - 1);
+    }
+  };
+
+  const handlePlaceOrder = () => {
+    const selectedPlan = INITIAL_PRICING.find(p => p.format === selectedFormat) || INITIAL_PRICING[1];
+    const totalAmount = selectedPlan.price + (arAddon ? 399 : 0);
+    const newOrder: Order = {
+      id: `WV-${Math.floor(100000 + Math.random() * 900000)}`,
+      createdAt: new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }),
+      status: 'In Production',
+      childName: preview.childName,
+      storyTitle: preview.storyTitle,
+      format: selectedFormat as any,
+      amount: totalAmount,
+      language: preview.language,
+      coverUrl: preview.coverUrl,
+      trackingNumber: `BD${Math.floor(100000000 + Math.random() * 900000000)}IN`
+    };
+    setOrderComplete(true);
+    onOrderSuccess(newOrder);
+  };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-8">
-      {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-3xl bg-[#FFF8F5] border border-[#FCD9D0]">
-        <div className="flex items-center gap-3">
-          {preview.photoUrl ? (
-            <div className="w-12 h-12 rounded-2xl overflow-hidden border-2 border-[#EB5E44] shrink-0 bg-[#162032] shadow-sm">
-              <img src={preview.photoUrl} alt={preview.childName} className="w-full h-full object-cover" />
-            </div>
-          ) : (
-            <span className="w-12 h-12 rounded-2xl bg-[#EB5E44] text-white flex items-center justify-center font-bold text-base shadow-sm">
-              ✨
+    <div className="min-h-screen bg-[#FAF8F5] pb-24 text-[#161922]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 sm:pt-10">
+        
+        {/* Top Header / Back */}
+        <div className="flex items-center justify-between pb-6 mb-6 border-b border-[#EBE4DA]">
+          <button
+            onClick={onBack}
+            className="inline-flex items-center gap-2 text-xs font-semibold text-[#56647A] hover:text-[#C05638] transition cursor-pointer"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>Back to Creator</span>
+          </button>
+
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-semibold text-[#56647A]">
+              Starring: <strong className="text-[#161922]">{preview.childName}</strong>
             </span>
-          )}
-          <div>
-            <div className="flex items-center gap-2 flex-wrap">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#EB5E44] bg-[#EB5E44]/10 px-2 py-0.5 rounded-md">
-                32-Page Keepsake Edition
-              </span>
-              <span className="text-[11px] font-semibold text-[#56647A]">
-                8.5 × 8.5 inch • Lulu Standard
-              </span>
-              <span className="text-[11px] font-bold text-[#4EAA8C] bg-[#E8F6F0] px-2 py-0.5 rounded-md flex items-center gap-1">
-                <UserCheck className="w-3 h-3" /> Face Replaced
-              </span>
-            </div>
-            <h2 className="font-display text-lg font-bold text-[#162032] mt-0.5">
-              {preview.childName}’s Personalized Storybook
-            </h2>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            onClick={onEditDetails}
-            className="px-4 py-2 rounded-xl border border-[#E8DFD1] hover:border-[#162032] text-xs font-bold text-[#162032] transition-colors"
-          >
-            Edit Child Details
-          </button>
-          <button
-            onClick={() => {
-              if (navigator.share) {
-                navigator.share({
-                  title: `${preview.childName}'s Personalized Story`,
-                  text: `Check out ${preview.childName}'s 32-page personalized story on Verve Studio!`,
-                  url: window.location.href
-                }).catch(() => {});
-              } else {
-                navigator.clipboard.writeText(window.location.href);
-                alert('Preview link copied to clipboard!');
-              }
-            }}
-            className="p-2 rounded-xl border border-[#E8DFD1] hover:border-[#162032] text-[#162032] transition-colors"
-            title="Share with family"
-          >
-            <Share2 className="w-4 h-4" />
-          </button>
-        </div>
-      </div>
-
-      {/* Interactive Controls Bar: Gender Version Switcher & Face Replacement Toggle */}
-      <div className="bg-[#162032] text-white rounded-2xl p-3.5 shadow-md flex flex-wrap items-center justify-between gap-3">
-        {/* Gender Template Switcher */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs font-bold text-[#F5B027] flex items-center gap-1.5">
-            <Sliders className="w-3.5 h-3.5" /> Character Template:
-          </span>
-          <div className="inline-flex bg-white/10 p-1 rounded-xl">
-            <button
-              onClick={() => setActiveGender('boy')}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeGender === 'boy'
-                  ? 'bg-[#EB5E44] text-white shadow-sm'
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              <span>👦 Boy Version</span>
-            </button>
-            <button
-              onClick={() => setActiveGender('girl')}
-              className={`px-3 py-1 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 ${
-                activeGender === 'girl'
-                  ? 'bg-[#EB5E44] text-white shadow-sm'
-                  : 'text-white/70 hover:text-white'
-              }`}
-            >
-              <span>👧 Girl Version</span>
-            </button>
-          </div>
-        </div>
-
-        {/* Face Replacement Toggle */}
-        <div className="flex items-center gap-2">
-          <span className="text-xs text-white/80 font-medium hidden sm:inline">
-            Face Integration:
-          </span>
-          <button
-            onClick={() => setShowFaceReplacement(!showFaceReplacement)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all ${
-              showFaceReplacement
-                ? 'bg-[#4EAA8C] text-white shadow-xs'
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            {showFaceReplacement ? (
-              <>
-                <UserCheck className="w-3.5 h-3.5" />
-                <span>Face Replaced (Active)</span>
-              </>
-            ) : (
-              <>
-                <Eye className="w-3.5 h-3.5" />
-                <span>Show Base Template</span>
-              </>
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* 32-Page Structure Quick Navigation Bar */}
-      <div className="bg-white rounded-2xl p-3 border border-[#E8DFD1] shadow-xs">
-        <div className="flex items-center justify-between mb-2 px-1">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-[#56647A] flex items-center gap-1.5">
-            <BookOpen className="w-3.5 h-3.5 text-[#EB5E44]" />
-            32-Page Architecture (8.5 × 8.5 in Lulu Specification)
-          </span>
-          <span className="text-[11px] font-bold text-[#EB5E44]">
-            Page {currentPageIndex + 1} of 32
-          </span>
-        </div>
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-thin">
-          {[
-            { label: '1 Cover', idx: 0, unlocked: true },
-            { label: '2 Title', idx: 1, unlocked: true },
-            { label: '3 Dedication', idx: 2, unlocked: true },
-            { label: '4 Story', idx: 3, unlocked: true },
-            { label: '5 Story', idx: 4, unlocked: true },
-            { label: '6–29 Story', idx: 5, unlocked: false },
-            { label: '30 Ending', idx: 29, unlocked: false },
-            { label: '31 Hero Profile', idx: 30, unlocked: false },
-            { label: '32 End Page', idx: 31, unlocked: false },
-          ].map((item) => (
-            <button
-              key={item.label}
-              onClick={() => setCurrentPageIndex(item.idx)}
-              className={`px-2.5 py-1 rounded-lg text-[11px] font-bold whitespace-nowrap transition-all flex items-center gap-1 shrink-0 ${
-                (item.idx === currentPageIndex || (item.idx === 5 && currentPageIndex >= 5 && currentPageIndex <= 28))
-                  ? 'bg-[#162032] text-white shadow-xs'
-                  : item.unlocked
-                  ? 'bg-[#FAF7F2] text-[#162032] hover:bg-[#F0E9DF] border border-[#E8DFD1]'
-                  : 'bg-white text-[#7A889B] hover:bg-[#FAF7F2] border border-dashed border-[#D5CDBC]'
-              }`}
-            >
-              {!item.unlocked && <Lock className="w-2.5 h-2.5 opacity-60" />}
-              <span>{item.label}</span>
-            </button>
-          ))}
-        </div>
-      </div>
-      {/* Main Interactive Book Spread */}
-      <div className="relative max-w-3xl mx-auto">
-        <div className="bg-white rounded-3xl p-4 sm:p-8 border border-[#E8DFD1] shadow-2xl book-shadow">
-          {/* SPREAD: COVER (Page 1) */}
-          {currentPageIndex === 0 && (
-            <div className="aspect-[4/3] sm:aspect-square max-w-xl mx-auto rounded-2xl overflow-hidden relative bg-[#162032] flex flex-col justify-between p-6 sm:p-10 text-white shadow-inner border border-white/10">
-              <PersonalizedFaceComposite
-                sceneImage={getPageImageForGender(currentPage, activeGender)}
-                characterFaceUrl={characterFaceUrl}
-                referencePhotoUrl={preview.photoUrl}
-                faceSlot={currentPage.faceSlot || { top: 32, left: 44, width: 24, height: 28, rotate: 0 }}
-                gender={activeGender}
-                childName={preview.childName}
-                showFaceReplacement={showFaceReplacement}
-                className="absolute inset-0 w-full h-full"
-                altText={`Personalized Cover for ${preview.childName}`}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/25 pointer-events-none" />
-
-              {/* Cover Top */}
-              <div className="relative z-10 flex items-center justify-between pointer-events-none">
-                <span className="text-[10px] font-bold tracking-widest uppercase text-[#F5B027] border border-[#F5B027]/40 px-3 py-1 rounded-full backdrop-blur-xs">
-                  VERVE STUDIO • 8.5 × 8.5 INCH
-                </span>
-                <span className="text-xs font-medium text-white/90 bg-black/50 px-2.5 py-0.5 rounded-full backdrop-blur-xs">
-                  {activeGender === 'girl' ? 'Girl Edition' : 'Boy Edition'}
-                </span>
-              </div>
-
-              {/* Cover Center Title */}
-              <div className="relative z-10 my-auto text-center py-4 pointer-events-none">
-                <p className="text-xs sm:text-sm font-semibold tracking-wider text-[#F5B027] uppercase drop-shadow-sm">
-                  A personalized adventure for
-                </p>
-                <h1 className="font-display text-3xl sm:text-5xl font-extrabold text-white mt-1.5 drop-shadow-md">
-                  {preview.childName}
+        {/* =================================================================
+            VIEW 1: FREE PREVIEW WITH REALISTIC 3D PAGE-FLIP (Mockup Screen 6)
+            ================================================================= */}
+        {viewState === 'preview' && (
+          <div className="space-y-8 animate-in fade-in">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <h1 className="font-serif-story font-bold text-2xl sm:text-3xl text-[#161922]">
+                  Your free preview is ready!
                 </h1>
-                <p className="font-display text-xl sm:text-2xl font-bold text-white/95 mt-2 drop-shadow-sm">
-                  & {preview.storyTitle}
-                </p>
-              </div>
-
-              {/* Cover Bottom */}
-              <div className="relative z-10 flex items-center justify-between border-t border-white/20 pt-4 text-xs font-medium text-white/85 pointer-events-none">
-                <span className="flex items-center gap-1.5">
-                  <span className="w-2 h-2 rounded-full bg-[#4EAA8C]"></span>
-                  32 Full-Color Pages
-                </span>
-                <span className="text-[#F5B027] font-semibold">Matte Laminated Cover</span>
-              </div>
-            </div>
-          )}
-
-          {/* SPREAD: TITLE PAGE (Page 2) */}
-          {currentPageIndex === 1 && (
-            <div className="aspect-[4/3] sm:aspect-square max-w-xl mx-auto rounded-2xl p-6 sm:p-10 bg-[#FAF7F2] border border-[#E8DFD1] flex flex-col justify-between items-center text-center relative book-spine-left">
-              <div className="w-full flex justify-between items-center text-[11px] text-[#56647A] font-semibold">
-                <span>VERVE STUDIO ORIGINAL</span>
-                <span>8.5 × 8.5 INCH PICTURE BOOK</span>
-              </div>
-
-              <div className="my-auto space-y-3 max-w-md w-full">
-                {/* Hero Portrait in circular/medallion frame */}
-                <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-3xl overflow-hidden border-2 border-[#EB5E44] mx-auto shadow-md relative bg-[#162032]">
-                  <PersonalizedFaceComposite
-                    sceneImage={getPageImageForGender(currentPage, activeGender)}
-                    characterFaceUrl={characterFaceUrl}
-                    referencePhotoUrl={preview.photoUrl}
-                    faceSlot={currentPage.faceSlot || { top: 38, left: 47, width: 24, height: 28 }}
-                    gender={activeGender}
-                    childName={preview.childName}
-                    showFaceReplacement={showFaceReplacement}
-                    altText="Title Page Portrait"
-                  />
+                <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FBF2EE] text-[#C05638] text-xs font-bold border border-[#EBE4DA]">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>3D Page Turn Enabled</span>
                 </div>
-
-                <h3 className="font-display text-2xl sm:text-3xl font-extrabold text-[#162032] leading-tight">
-                  {preview.storyTitle}
-                </h3>
-                <div className="w-16 h-0.5 bg-[#EB5E44] mx-auto rounded-full my-1"></div>
-                <p className="text-xs sm:text-sm font-medium text-[#56647A]">
-                  A personalized storybook written especially for
-                </p>
-                <p className="font-display text-xl sm:text-2xl font-bold text-[#EB5E44]">
-                  {preview.childName} (Age {preview.childAge})
-                </p>
-                <p className="text-[11px] text-[#56647A]">
-                  Illustrated in bespoke <span className="font-bold text-[#162032]">{preview.characterStyle}</span> ({activeGender === 'girl' ? 'Girl' : 'Boy'} Edition)
-                </p>
               </div>
-
-              <div className="w-full pt-4 border-t border-[#E8DFD1] flex items-center justify-between text-[11px] text-[#56647A]">
-                <span>First Edition • 32 Pages</span>
-                <span className="font-bold">Page 2</span>
-              </div>
+              <p className="text-sm text-[#56647A]">
+                Turn the pages below to preview your child's personalized story. The full physical keepsake includes all 32 pages.
+              </p>
             </div>
-          )}
 
-          {/* SPREAD: DEDICATION (Page 3) */}
-          {currentPageIndex === 2 && (
-            <div className="aspect-[4/3] sm:aspect-square max-w-xl mx-auto rounded-2xl p-6 sm:p-10 bg-[#FAF7F2] border border-[#E8DFD1] flex flex-col justify-between items-center text-center relative book-spine-left">
-              <div className="w-full text-right text-[11px] text-[#56647A]">
-                <span>Keepsake Dedication</span>
-              </div>
+            {/* Physical Book Realistic Exterior Container with Center Spine & 3D Perspective */}
+            <div className="relative [perspective:1400px] py-2">
+              {/* Outer Book Cover Shadow & Hardcover Rim */}
+              <div className="p-2.5 sm:p-4 rounded-4xl bg-gradient-to-br from-[#2D3139] via-[#1E222A] to-[#14161C] shadow-2xl border-4 border-[#3D424E]/40 relative overflow-hidden">
+                
+                {/* Book Edge Pages Stack (Thickness Simulation) */}
+                <div className="absolute right-1 top-4 bottom-4 w-2 bg-gradient-to-r from-[#D5CDC2] via-[#FAF8F5] to-[#EBE4DA] rounded-r-xs opacity-80" />
+                <div className="absolute left-1 top-4 bottom-4 w-2 bg-gradient-to-l from-[#D5CDC2] via-[#FAF8F5] to-[#EBE4DA] rounded-l-xs opacity-80" />
 
-              <div className="my-auto max-w-md space-y-3 w-full">
-                {/* Hero Bedside / Vignette Portrait */}
-                <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden border-2 border-[#EB5E44] mx-auto shadow-md relative bg-[#162032]">
-                  <PersonalizedFaceComposite
-                    sceneImage={getPageImageForGender(currentPage, activeGender)}
-                    characterFaceUrl={characterFaceUrl}
-                    referencePhotoUrl={preview.photoUrl}
-                    faceSlot={currentPage.faceSlot || { top: 38, left: 47, width: 22, height: 26 }}
-                    gender={activeGender}
-                    childName={preview.childName}
-                    showFaceReplacement={showFaceReplacement}
-                    altText="Dedication Portrait"
-                  />
-                </div>
+                {/* Animated Page Flip Container */}
+                <AnimatePresence mode="wait" custom={flipDirection}>
+                  <motion.div
+                    key={activeSpreadIndex}
+                    custom={flipDirection}
+                    variants={pageFlipVariants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    className="bg-[#FAF8F5] rounded-2xl sm:rounded-3xl border border-[#EBE4DA] overflow-hidden relative"
+                    style={{ transformStyle: 'preserve-3d' }}
+                  >
+                    {/* Realistic Center Spine Shadow Overlay */}
+                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-12 bg-gradient-to-r from-black/10 via-black/25 to-black/10 pointer-events-none z-20 hidden md:block" />
+                    <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5BBAF] pointer-events-none z-20 hidden md:block shadow-sm" />
 
-                <span className="text-xs font-bold uppercase tracking-widest text-[#56647A] block">
-                  Dedication Page
-                </span>
-                <h3 className="font-display text-xl sm:text-2xl font-bold text-[#162032]">
-                  For Our Hero, {preview.childName}
-                </h3>
-                <p className="text-xs sm:text-sm text-[#162032] italic leading-relaxed font-serif bg-white/70 p-4 rounded-xl border border-[#E8DFD1]/80">
-                  "{preview.dedicationMessage}"
-                </p>
-                <p className="text-xs font-bold text-[#EB5E44]">
-                  With endless love, {preview.dedicationFrom}
-                </p>
-              </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 min-h-[380px] sm:min-h-[440px]">
+                      
+                      {/* Left Page (Text + AR Magic trigger) */}
+                      <div className="p-6 sm:p-10 flex flex-col justify-between relative bg-gradient-to-r from-[#F7F4EE] via-[#FAF8F5] to-[#F3EEE5] border-b md:border-b-0 md:border-r border-[#EBE4DA]">
+                        {/* Subtle paper texture highlight */}
+                        <div className="space-y-4">
+                          <div className="flex items-center justify-between">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-[#C05638] bg-[#FBF2EE] px-2.5 py-0.5 rounded-full border border-[#EBE4DA]">
+                              Spread {activeSpreadIndex + 1} of 3
+                            </span>
+                            <span className="text-[10px] text-[#8896AB] font-mono">
+                              Pages {activeSpreadIndex * 2 + 1} - {activeSpreadIndex * 2 + 2}
+                            </span>
+                          </div>
 
-              <div className="w-full pt-4 border-t border-[#E8DFD1] flex items-center justify-between text-[11px] text-[#56647A]">
-                <span>Printed on White Coated Paper</span>
-                <span className="font-bold">Page 3</span>
-              </div>
-            </div>
-          )}
+                          <div className="space-y-1">
+                            <h3 className="font-serif-story font-bold text-2xl sm:text-3xl text-[#161922] leading-tight">
+                              {sampleSpreads[activeSpreadIndex].title}
+                            </h3>
+                            <p className="text-xs font-semibold text-[#8896AB]">
+                              {sampleSpreads[activeSpreadIndex].sub}
+                            </p>
+                          </div>
 
-          {/* SPREAD: STORY PAGES & SPECIAL PAGES (Page 4+) */}
-          {currentPageIndex >= 3 && (
-            <div>
-              {(() => {
-                const page = currentPage;
-
-                if (!page.isUnlockedInPreview) {
-                  return (
-                    <div className="aspect-[4/3] sm:aspect-[16/11] rounded-2xl p-8 bg-[#FAF7F2] border border-[#E8DFD1] flex flex-col justify-center items-center text-center relative overflow-hidden">
-                      {/* Blurred background preview with gender illustration */}
-                      <img
-                        src={getPageImageForGender(page, activeGender)}
-                        alt="Locked spread"
-                        className="absolute inset-0 w-full h-full object-cover filter blur-md opacity-30"
-                      />
-                      <div className="relative z-10 max-w-md p-6 bg-white/95 backdrop-blur-md rounded-2xl border border-[#E8DFD1] shadow-lg">
-                        <div className="w-12 h-12 rounded-2xl bg-[#162032] text-[#F5B027] flex items-center justify-center mx-auto mb-3 shadow-md">
-                          <Lock className="w-6 h-6" />
+                          <p className="text-sm sm:text-base text-[#161922] leading-relaxed font-serif-story pt-2">
+                            "{sampleSpreads[activeSpreadIndex].text}"
+                          </p>
                         </div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#EB5E44] bg-[#FFF8F5] px-2.5 py-0.5 rounded-full border border-[#FCD9D0]">
-                          {getPageCategoryLabel(currentPageIndex)}
-                        </span>
-                        <h4 className="font-display text-xl font-bold text-[#162032] mt-2">
-                          Pages 6 to 32 are Reserved
-                        </h4>
-                        <p className="text-xs text-[#56647A] mt-2 mb-4 leading-relaxed">
-                          Unlock the complete 32-page personalized keepsake (8.5 × 8.5 inch square format, printed on premium white coated paper with matte laminated cover) to see how {preview.childName} completes their journey!
-                        </p>
-                        <button
-                          onClick={() => onUnlockStory(selectedFormat, preview)}
-                          className="w-full py-2.5 rounded-xl bg-[#EB5E44] hover:bg-[#D94F36] text-white text-xs font-bold transition-colors shadow-sm"
-                        >
-                          Unlock Complete 32-Page Story (From ₹399)
-                        </button>
+                        
+                        <div className="pt-6 border-t border-[#EBE4DA]/70 flex items-center justify-between">
+                          <button
+                            onClick={() => setIsArModalOpen(true)}
+                            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FBF2EE] text-[#C05638] text-xs font-bold hover:bg-[#F5E2DA] transition-all cursor-pointer shadow-xs active:scale-98"
+                          >
+                            <QrCode className="w-4 h-4" />
+                            <span>✨ WonderMagic AR</span>
+                          </button>
+
+                          <span className="text-[11px] text-[#8896AB] italic font-serif-story">
+                            170gsm Silk Paper
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Right Page (Full-bleed Illustration with page curl lighting) */}
+                      <div className="relative bg-slate-900 overflow-hidden group flex items-center justify-center">
+                        <img
+                          src={sampleSpreads[activeSpreadIndex].image}
+                          alt="Spread illustration"
+                          className="w-full h-full object-cover min-h-[300px]"
+                        />
+                        {/* Page curvature lighting gradient */}
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/10 pointer-events-none" />
+                        
+                        <div className="absolute top-3 right-3 bg-white/95 backdrop-blur-xs px-3 py-1 rounded-full text-[10px] font-bold text-[#161922] shadow-sm flex items-center gap-1.5 border border-white/40">
+                          <Sparkles className="w-3 h-3 text-[#C05638]" />
+                          <span>Consistent Likeness</span>
+                        </div>
+
+                        {/* Page Number */}
+                        <div className="absolute bottom-3 right-4 bg-black/60 backdrop-blur-xs text-white text-[10px] font-mono px-2 py-0.5 rounded-sm">
+                          p. {activeSpreadIndex * 2 + 2}
+                        </div>
+                      </div>
+
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+
+              {/* Physical Book Bottom Shadow */}
+              <div className="h-4 bg-black/10 blur-md rounded-full mx-10 -mt-2 pointer-events-none" />
+            </div>
+
+            {/* Interactive Page Navigation & Thumbnails */}
+            <div className="bg-white rounded-2xl p-4 border border-[#EBE4DA] shadow-xs flex items-center justify-between gap-4">
+              <button
+                onClick={handlePrevSpread}
+                disabled={activeSpreadIndex === 0}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#161922] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                <span className="hidden sm:inline">Previous Page</span>
+              </button>
+
+              {/* Spread Quick Buttons */}
+              <div className="flex items-center gap-3">
+                {sampleSpreads.map((sp, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      setFlipDirection(idx > activeSpreadIndex ? 1 : -1);
+                      setActiveSpreadIndex(idx);
+                    }}
+                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 transition-all cursor-pointer relative ${
+                      activeSpreadIndex === idx
+                        ? 'border-[#C05638] ring-2 ring-[#C05638]/20 scale-105 shadow-sm'
+                        : 'border-[#D5CDC2] opacity-60 hover:opacity-100'
+                    }`}
+                  >
+                    <img src={sp.image} alt={`Spread ${idx + 1}`} className="w-full h-full object-cover" />
+                    <span className="absolute bottom-0 inset-x-0 bg-black/60 text-white text-[9px] font-bold text-center">
+                      {idx + 1}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <button
+                onClick={handleNextSpread}
+                disabled={activeSpreadIndex === sampleSpreads.length - 1}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#161922] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition cursor-pointer"
+              >
+                <span className="hidden sm:inline">Next Page</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Bottom Bar: Free Preview & Continue to Full Book */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <div className="flex items-center gap-2 text-xs font-semibold text-[#56647A]">
+                <CheckCircle2 className="w-4 h-4 text-[#16A34A]" />
+                <span>Private full-book preview • Request edits anytime</span>
+              </div>
+
+              <button
+                onClick={() => setViewState('full-book')}
+                className="w-full sm:w-auto px-8 py-3.5 rounded-full bg-[#C05638] hover:bg-[#AC492E] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+              >
+                <span>View full 32-page book</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* =================================================================
+            VIEW 2: FULL BOOK 32-PAGE REVIEW & PROOF (Mockup Screen 7)
+            ================================================================= */}
+        {viewState === 'full-book' && (
+          <div className="space-y-8 animate-in fade-in">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between flex-wrap gap-3">
+                <h1 className="font-serif-story font-bold text-2xl sm:text-3xl text-[#161922]">
+                  Your complete book is ready!
+                </h1>
+                
+                {/* Switch between 3D Flip Reader vs Grid Overview */}
+                <div className="flex items-center bg-[#FAF8F5] p-1 rounded-xl border border-[#EBE4DA]">
+                  <button
+                    onClick={() => setFullBookMode('flip-reader')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                      fullBookMode === 'flip-reader'
+                        ? 'bg-[#C05638] text-white shadow-xs'
+                        : 'text-[#56647A] hover:text-[#161922]'
+                    }`}
+                  >
+                    <BookOpen className="w-3.5 h-3.5" />
+                    <span>Flip Reader</span>
+                  </button>
+                  <button
+                    onClick={() => setFullBookMode('grid')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 cursor-pointer ${
+                      fullBookMode === 'grid'
+                        ? 'bg-[#C05638] text-white shadow-xs'
+                        : 'text-[#56647A] hover:text-[#161922]'
+                    }`}
+                  >
+                    <Grid className="w-3.5 h-3.5" />
+                    <span>32-Page Grid</span>
+                  </button>
+                </div>
+              </div>
+              <p className="text-sm text-[#56647A]">
+                Take a final look before printing. You can flip through the pages or inspect the full gallery grid.
+              </p>
+            </div>
+
+            {/* MODE A: 3D Flip Reader (Physical Spread Flipping) */}
+            {fullBookMode === 'flip-reader' && (
+              <div className="space-y-4">
+                <div className="relative [perspective:1400px]">
+                  <div className="p-3 sm:p-4 rounded-3xl bg-gradient-to-br from-[#2D3139] via-[#1E222A] to-[#14161C] shadow-2xl border-4 border-[#3D424E]/40 overflow-hidden relative">
+                    
+                    <AnimatePresence mode="wait" custom={flipDirection}>
+                      <motion.div
+                        key={fullBookSpreadIndex}
+                        custom={flipDirection}
+                        variants={pageFlipVariants}
+                        initial="enter"
+                        animate="center"
+                        exit="exit"
+                        className="bg-[#FAF8F5] rounded-2xl overflow-hidden relative border border-[#EBE4DA]"
+                        style={{ transformStyle: 'preserve-3d' }}
+                      >
+                        {/* Spine Shadow */}
+                        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-10 bg-gradient-to-r from-black/10 via-black/25 to-black/10 pointer-events-none z-20 hidden md:block" />
+                        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 w-[2px] bg-[#C5BBAF] pointer-events-none z-20 hidden md:block" />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 min-h-[380px]">
+                          {/* Left Page */}
+                          <div className="p-6 sm:p-8 flex flex-col justify-between bg-gradient-to-r from-[#F7F4EE] to-[#FAF8F5] border-b md:border-b-0 md:border-r border-[#EBE4DA]">
+                            <div className="space-y-3">
+                              <div className="flex items-center justify-between text-xs text-[#56647A]">
+                                <span className="font-bold text-[#C05638]">Page {pairedSpreads[fullBookSpreadIndex].left.pageNumber}</span>
+                                <span>{pairedSpreads[fullBookSpreadIndex].left.sceneTitle}</span>
+                              </div>
+                              
+                              {pairedSpreads[fullBookSpreadIndex].left.pageNumber === 3 ? (
+                                <div className="p-4 rounded-2xl bg-white border border-[#EBE4DA] space-y-2 mt-4">
+                                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#C05638]">
+                                    Parent Dedication
+                                  </span>
+                                  <p className="text-sm italic font-serif-story text-[#161922] leading-relaxed">
+                                    "{preview.dedicationMessage || `For our dearest ${preview.childName}. May your heart always be brave and your smile radiant.`}"
+                                  </p>
+                                  <p className="text-xs font-bold text-right text-[#56647A]">
+                                    — {preview.dedicationFrom || 'With all our love'}
+                                  </p>
+                                </div>
+                              ) : (
+                                <p className="text-sm sm:text-base font-serif-story text-[#161922] leading-relaxed pt-2">
+                                  "{pairedSpreads[fullBookSpreadIndex].left.text}"
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="text-[10px] font-mono text-[#8896AB] pt-4">
+                              Page {pairedSpreads[fullBookSpreadIndex].left.pageNumber} of 32
+                            </div>
+                          </div>
+
+                          {/* Right Page */}
+                          <div className="relative bg-slate-900 overflow-hidden flex items-center justify-center">
+                            <img
+                              src={pairedSpreads[fullBookSpreadIndex].right.imageUrl}
+                              alt={pairedSpreads[fullBookSpreadIndex].right.sceneTitle}
+                              className="w-full h-full object-cover min-h-[280px]"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-r from-black/15 via-transparent to-black/5 pointer-events-none" />
+                            
+                            <div className="absolute top-3 right-3 bg-black/60 text-white text-[10px] font-bold px-2 py-0.5 rounded-sm">
+                              p. {pairedSpreads[fullBookSpreadIndex].right.pageNumber}
+                            </div>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* Flip Reader Controls */}
+                <div className="bg-white rounded-2xl p-4 border border-[#EBE4DA] flex items-center justify-between gap-4 shadow-xs">
+                  <button
+                    onClick={handlePrevFullSpread}
+                    disabled={fullBookSpreadIndex === 0}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#161922] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                    <span>Previous Spread</span>
+                  </button>
+
+                  <div className="text-xs font-bold text-[#161922]">
+                    Spread {fullBookSpreadIndex + 1} of {pairedSpreads.length} <span className="text-[#8896AB] font-normal">(Pages {fullBookSpreadIndex * 2 + 1}–{fullBookSpreadIndex * 2 + 2})</span>
+                  </div>
+
+                  <button
+                    onClick={handleNextFullSpread}
+                    disabled={fullBookSpreadIndex === pairedSpreads.length - 1}
+                    className="flex items-center gap-1.5 px-4 py-2 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#161922] disabled:opacity-30 disabled:cursor-not-allowed hover:bg-[#FAF8F5] transition cursor-pointer"
+                  >
+                    <span>Next Spread</span>
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* MODE B: 32-Page Grid Proof Gallery */}
+            {fullBookMode === 'grid' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#EBE4DA] shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-[#F5EFEB]">
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#161922]">
+                    All 32 Storybook Pages
+                  </span>
+                  <span className="text-xs font-semibold text-[#C05638]">
+                    Click any page to inspect
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3 max-h-[460px] overflow-y-auto p-1">
+                  {spreads.map((p) => (
+                    <div
+                      key={p.pageNumber}
+                      onClick={() => setZoomPage(p.pageNumber)}
+                      className="border border-[#EBE4DA] rounded-xl overflow-hidden bg-[#FAF8F5] hover:border-[#C05638] transition cursor-pointer group flex flex-col justify-between"
+                    >
+                      <div className="aspect-[4/3] bg-slate-900 overflow-hidden relative">
+                        <img src={p.imageUrl} alt={p.sceneTitle} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                        <div className="absolute top-1 left-1 px-1.5 py-0.5 bg-black/60 rounded text-[9px] font-bold text-white">
+                          p.{p.pageNumber}
+                        </div>
+                      </div>
+                      <div className="p-2">
+                        <p className="text-[11px] font-bold text-[#161922] truncate">{p.sceneTitle}</p>
                       </div>
                     </div>
-                  );
-                }
+                  ))}
+                </div>
+              </div>
+            )}
 
+            {/* Bottom Actions: Request a Change vs Approve */}
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-2">
+              <button
+                onClick={() => setViewState('preview')}
+                className="px-6 py-3 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#56647A] hover:bg-white cursor-pointer"
+              >
+                Back to Preview
+              </button>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  onClick={() => setIsChangeModalOpen(true)}
+                  className="flex-1 sm:flex-initial px-6 py-3.5 rounded-full border border-[#D5CDC2] hover:border-[#161922] bg-white text-[#161922] font-semibold text-sm transition cursor-pointer"
+                >
+                  Request a change
+                </button>
+
+                <button
+                  onClick={() => setViewState('checkout')}
+                  className="flex-1 sm:flex-initial px-10 py-3.5 rounded-full bg-[#C05638] hover:bg-[#AC492E] text-white font-semibold text-sm shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer active:scale-98"
+                >
+                  <span>Approve & Order</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* =================================================================
+            VIEW 3: CHOOSE PACKAGE & CHECKOUT (Mockup Screen 8)
+            ================================================================= */}
+        {viewState === 'checkout' && (
+          <div className="space-y-8 animate-in fade-in">
+            <div className="space-y-2">
+              <h1 className="font-serif-story font-bold text-2xl sm:text-3xl text-[#161922]">
+                Choose your package
+              </h1>
+              <p className="text-sm text-[#56647A]">
+                Select the format you'd like to receive for {preview.childName}'s storybook.
+              </p>
+            </div>
+
+            {/* 4 Package Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {INITIAL_PRICING.map((pkg) => {
+                const isSelected = selectedFormat === pkg.format;
                 return (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 rounded-2xl overflow-hidden border border-[#E8DFD1] bg-[#FAF7F2]">
-                    {/* Page Left: Illustrated Scene with Face Replacement */}
-                    <div className="relative aspect-square sm:aspect-auto bg-[#162032] overflow-hidden min-h-[300px]">
-                      <PersonalizedFaceComposite
-                        sceneImage={getPageImageForGender(page, activeGender)}
-                        characterFaceUrl={characterFaceUrl}
-                        referencePhotoUrl={preview.photoUrl}
-                        faceSlot={page.faceSlot || { top: 36, left: 46, width: 24, height: 28, rotate: 0 }}
-                        gender={activeGender}
-                        childName={preview.childName}
-                        showFaceReplacement={showFaceReplacement}
-                        altText={page.sceneTitle}
-                      />
-                    </div>
+                  <div
+                    key={pkg.format}
+                    onClick={() => setSelectedFormat(pkg.format)}
+                    className={`bg-white rounded-3xl p-5 border-2 transition-all cursor-pointer flex flex-col justify-between relative ${
+                      isSelected
+                        ? 'border-[#C05638] ring-2 ring-[#C05638]/20 shadow-md'
+                        : 'border-[#EBE4DA] hover:border-[#C05638]/50'
+                    }`}
+                  >
+                    {pkg.badge && (
+                      <span className={`absolute -top-3 left-4 px-2.5 py-0.5 rounded-full text-[10px] font-bold ${
+                        pkg.badge === 'Most Popular'
+                          ? 'bg-[#C05638] text-white shadow-xs'
+                          : 'bg-[#161922] text-[#F5B027]'
+                      }`}>
+                        {pkg.badge}
+                      </span>
+                    )}
 
-                    {/* Page Right: Personalized Narrative Text */}
-                    <div className="p-6 sm:p-8 flex flex-col justify-between bg-white book-spine-left">
-                      <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-[#EB5E44]">
-                            {page.sceneTitle}
+                    <div className="space-y-3 pt-1">
+                      <h3 className="font-serif-story font-bold text-base text-[#161922]">
+                        {pkg.title}
+                      </h3>
+                      
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-serif-story font-bold text-2xl text-[#161922]">
+                          ₹{pkg.price}
+                        </span>
+                        {pkg.originalPrice && (
+                          <span className="text-xs text-[#8896AB] line-through">
+                            ₹{pkg.originalPrice}
                           </span>
-                          <span className="text-[10px] text-[#56647A] bg-[#FAF7F2] px-2 py-0.5 rounded border border-[#E8DFD1]">
-                            {activeGender === 'girl' ? 'Girl Edition' : 'Boy Edition'}
-                          </span>
-                        </div>
-                        <p className="font-sans text-sm sm:text-base leading-relaxed text-[#162032] mt-4 font-medium whitespace-pre-line">
-                          {page.text}
-                        </p>
+                        )}
                       </div>
 
-                      <div className="pt-6 border-t border-[#F0E9DF] flex items-center justify-between text-xs text-[#56647A]">
-                        <span>Language: {preview.language}</span>
-                        <span className="font-bold">Page {page.pageNumber} of 32</span>
+                      <ul className="space-y-2 pt-2 border-t border-[#F5EFEB]">
+                        {pkg.features.map((feat, idx) => (
+                          <li key={idx} className="flex items-center gap-2 text-xs text-[#56647A]">
+                            <Check className="w-3.5 h-3.5 text-[#C05638] shrink-0" />
+                            <span>{feat}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="pt-4 mt-4 border-t border-[#F5EFEB]">
+                      <div className={`w-full py-2 rounded-xl text-xs font-bold text-center transition ${
+                        isSelected ? 'bg-[#C05638] text-white' : 'bg-[#FAF8F5] text-[#56647A]'
+                      }`}>
+                        {isSelected ? 'Selected' : 'Select'}
                       </div>
                     </div>
                   </div>
                 );
-              })()}
-            </div>
-          )}
-
-          {/* Reader Pagination Controls */}
-          <div className="mt-6 flex items-center justify-between border-t border-[#F0E9DF] pt-4">
-            <button
-              onClick={() => setCurrentPageIndex(Math.max(0, currentPageIndex - 1))}
-              disabled={currentPageIndex === 0}
-              className="px-4 py-2 rounded-xl border border-[#E8DFD1] text-xs font-bold text-[#162032] disabled:opacity-30 hover:border-[#162032] flex items-center gap-1 transition-colors"
-            >
-              <ChevronLeft className="w-4 h-4" />
-              <span>Previous Page</span>
-            </button>
-
-            <div className="text-center">
-              <span className="text-xs font-bold text-[#162032] block">
-                {getPageCategoryLabel(currentPageIndex)}
-              </span>
-              <span className="text-[10px] text-[#56647A]">
-                8.5 × 8.5 inch Lulu Standard
-              </span>
+              })}
             </div>
 
-            <button
-              onClick={() => setCurrentPageIndex(Math.min(totalPages - 1, currentPageIndex + 1))}
-              disabled={currentPageIndex >= totalPages - 1}
-              className="px-4 py-2 rounded-xl border border-[#E8DFD1] text-xs font-bold text-[#162032] disabled:opacity-30 hover:border-[#162032] flex items-center gap-1 transition-colors"
-            >
-              <span>Next Page</span>
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* SECTION: Ready to see the whole adventure? (Conversion Engine) */}
-      <div className="bg-white rounded-3xl p-6 sm:p-10 border border-[#E8DFD1] shadow-lg">
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <span className="text-xs font-bold uppercase tracking-wider text-[#EB5E44] bg-[#FFF8F5] px-3 py-1 rounded-full border border-[#FCD9D0]">
-            Complete Their 32-Page Adventure
-          </span>
-          <h3 className="font-display text-2xl sm:text-4xl font-extrabold text-[#162032] mt-2">
-            Ready to give {preview.childName} their full book?
-          </h3>
-          <p className="text-sm text-[#56647A] mt-2">
-            Choose instant high-resolution digital download or receive a beautifully printed 8.5 × 8.5 inch keepsake delivered to your doorstep anywhere in India.
-          </p>
-        </div>
-
-        {/* Format Options Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {INITIAL_PRICING.map((plan) => (
-            <div
-              key={plan.format}
-              onClick={() => setSelectedFormat(plan.format)}
-              className={`rounded-3xl p-6 border cursor-pointer transition-all flex flex-col justify-between relative ${
-                selectedFormat === plan.format
-                  ? 'border-[#EB5E44] bg-[#FFF8F5] ring-2 ring-[#EB5E44]/30 shadow-xl'
-                  : 'border-[#E8DFD1] bg-white hover:border-[#162032]'
+            {/* AR Add-on */}
+            <div 
+              onClick={() => setArAddon(!arAddon)}
+              className={`bg-white rounded-3xl p-6 border-2 transition-all cursor-pointer flex flex-col sm:flex-row items-center justify-between gap-4 ${
+                arAddon ? 'border-[#C05638] bg-[#FFFBF8]' : 'border-[#EBE4DA]'
               }`}
             >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#EB5E44] text-white text-[10px] font-extrabold tracking-wider uppercase shadow-xs">
-                  {plan.badge}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#FBF2EE] text-[#C05638] flex items-center justify-center shrink-0">
+                  <QrCode className="w-6 h-6" />
                 </div>
-              )}
-
-              <div>
-                <div className="flex items-center justify-between mb-2">
-                  <h4 className="font-display text-lg font-bold text-[#162032]">{plan.title}</h4>
-                  <div className={`w-5 h-5 rounded-full border flex items-center justify-center ${
-                    selectedFormat === plan.format
-                      ? 'border-[#EB5E44] bg-[#EB5E44] text-white'
-                      : 'border-[#E8DFD1]'
-                  }`}>
-                    {selectedFormat === plan.format && <Check className="w-3.5 h-3.5" />}
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="font-serif-story font-bold text-base text-[#161922]">
+                      Bring the book to life (AR)
+                    </h4>
+                    <span className="px-2 py-0.5 rounded-md bg-[#C05638]/10 text-[#C05638] text-[10px] font-bold">
+                      WonderMagic
+                    </span>
                   </div>
+                  <p className="text-xs text-[#56647A] max-w-md">
+                    Every page gets an interactive QR code. Scan with your phone camera to watch the illustration come to life as a short animated scene.
+                  </p>
                 </div>
-
-                <div className="flex items-baseline gap-2 mb-3">
-                  <span className="font-display text-3xl font-extrabold text-[#162032]">
-                    ₹{plan.price}
-                  </span>
-                  <span className="text-xs text-[#56647A] line-through">
-                    ₹{plan.originalPrice}
-                  </span>
-                  <span className="text-[11px] font-bold text-[#4EAA8C]">
-                    Save {Math.round(((plan.originalPrice - plan.price) / plan.originalPrice) * 100)}%
-                  </span>
-                </div>
-
-                {/* Print Spec Card Pill */}
-                <div className="bg-[#FAF7F2] p-2.5 rounded-xl border border-[#E8DFD1] text-[11px] text-[#162032] mb-3 space-y-1">
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-[#56647A]">Size & Pages:</span>
-                    <span>8.5 × 8.5 in • 32 Pages</span>
-                  </div>
-                  <div className="flex justify-between font-semibold">
-                    <span className="text-[#56647A]">Paper & Finish:</span>
-                    <span>White Coated • Matte</span>
-                  </div>
-                </div>
-
-                <p className="text-xs text-[#56647A] mb-4 leading-relaxed">
-                  {plan.description}
-                </p>
-
-                <ul className="space-y-2 border-t border-[#F0E9DF] pt-4">
-                  {plan.features.map((f, idx) => (
-                    <li key={idx} className="flex items-start gap-2 text-xs text-[#162032]">
-                      <Check className="w-3.5 h-3.5 text-[#4EAA8C] shrink-0 mt-0.5" />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-[#F0E9DF]">
-                <button
-                  id={`select-format-${plan.format}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setSelectedFormat(plan.format);
-                    onUnlockStory(plan.format, preview);
-                  }}
-                  className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all ${
-                    selectedFormat === plan.format
-                      ? 'bg-[#EB5E44] text-white shadow-md'
-                      : 'bg-[#162032] text-white hover:bg-[#EB5E44]'
-                  }`}
-                >
-                  Order {plan.title}
-                </button>
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="font-serif-story font-bold text-xl text-[#161922]">
+                  +₹399
+                </span>
+                <div className={`w-6 h-6 rounded-full border flex items-center justify-center ${
+                  arAddon ? 'bg-[#C05638] border-[#C05638] text-white' : 'border-[#D5CDC2]'
+                }`}>
+                  {arAddon && <Check className="w-4 h-4" />}
+                </div>
               </div>
             </div>
-          ))}
-        </div>
 
-        {/* Trust Badges */}
-        <div className="mt-8 pt-6 border-t border-[#F0E9DF] grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-          <div className="p-2">
-            <span className="text-xs font-bold text-[#162032] block">🚀 Fast Turnaround</span>
-            <span className="text-[11px] text-[#56647A]">Printed in 48 hrs</span>
+            {/* Trust Badges */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+              <div className="bg-white rounded-2xl p-4 border border-[#EBE4DA] flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-[#C05638] shrink-0" />
+                <div>
+                  <h5 className="text-xs font-bold text-[#161922]">Made in India</h5>
+                  <p className="text-[11px] text-[#8896AB]">Quality printing & binding</p>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-2xl p-4 border border-[#EBE4DA] flex items-center gap-3">
+                <Shield className="w-5 h-5 text-[#C05638] shrink-0" />
+                <div>
+                  <h5 className="text-xs font-bold text-[#161922]">Privacy protected</h5>
+                  <p className="text-[11px] text-[#8896AB]">Your child's photo is safe</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Checkout Buttons */}
+            <div className="flex items-center justify-between pt-4 border-t border-[#EBE4DA]">
+              <button
+                onClick={() => setViewState('full-book')}
+                className="px-6 py-3 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#56647A] hover:bg-white cursor-pointer"
+              >
+                Back to Proof
+              </button>
+
+              <button
+                onClick={() => setIsCheckoutModalOpen(true)}
+                className="px-10 py-4 rounded-full bg-[#C05638] hover:bg-[#AC492E] text-white font-semibold text-base shadow-sm transition-all flex items-center gap-2 cursor-pointer active:scale-98"
+              >
+                <span>Proceed to Checkout</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
-          <div className="p-2">
-            <span className="text-xs font-bold text-[#162032] block">🇮🇳 India-Wide</span>
-            <span className="text-[11px] text-[#56647A]">19,000+ Pincodes</span>
-          </div>
-          <div className="p-2">
-            <span className="text-xs font-bold text-[#162032] block">🛡️ Safe Materials</span>
-            <span className="text-[11px] text-[#56647A]">Child-safe soy inks</span>
-          </div>
-          <div className="p-2">
-            <span className="text-xs font-bold text-[#162032] block">⭐ 100% Delight</span>
-            <span className="text-[11px] text-[#56647A]">Loved by 12,000+ parents</span>
+        )}
+
+      </div>
+
+      {/* Change Request Modal */}
+      {isChangeModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-[#EBE4DA] shadow-2xl space-y-5">
+            <div className="flex items-center justify-between pb-3 border-b border-[#F5EFEB]">
+              <div className="flex items-center gap-2">
+                <MessageSquarePlus className="w-5 h-5 text-[#C05638]" />
+                <h3 className="font-serif-story font-bold text-xl text-[#161922]">
+                  Request Story Changes
+                </h3>
+              </div>
+              <button
+                onClick={() => {
+                  setIsChangeModalOpen(false);
+                  setChangeSubmitted(false);
+                }}
+                className="p-1 rounded-full text-[#8896AB] hover:text-[#161922]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {changeSubmitted ? (
+              <div className="text-center py-6 space-y-3">
+                <div className="w-12 h-12 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center mx-auto">
+                  <Check className="w-6 h-6" />
+                </div>
+                <h4 className="font-serif-story font-bold text-lg text-[#161922]">
+                  Change Request Received!
+                </h4>
+                <p className="text-xs text-[#56647A]">
+                  Our editorial and illustration team will update your proof within 2 hours.
+                </p>
+                <button
+                  onClick={() => {
+                    setIsChangeModalOpen(false);
+                    setChangeSubmitted(false);
+                  }}
+                  className="mt-4 px-6 py-2.5 rounded-full bg-[#161922] text-white text-xs font-semibold"
+                >
+                  Back to Review
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <p className="text-xs text-[#56647A]">
+                  Tell our artists what you'd like adjusted (e.g. hair length, skin tone, glasses, clothing colors, or phrasing on specific pages).
+                </p>
+
+                <textarea
+                  rows={4}
+                  value={changeText}
+                  onChange={(e) => setChangeText(e.target.value)}
+                  placeholder="e.g. Please add round glasses to Aarav on page 4, and make his space suit darker blue."
+                  className="w-full p-4 rounded-2xl border border-[#D5CDC2] text-xs text-[#161922] focus:border-[#C05638] outline-none"
+                />
+
+                <div className="flex items-center justify-end gap-3 pt-2">
+                  <button
+                    onClick={() => setIsChangeModalOpen(false)}
+                    className="px-5 py-2 rounded-full border border-[#D5CDC2] text-xs font-semibold text-[#56647A]"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => setChangeSubmitted(true)}
+                    disabled={!changeText.trim()}
+                    className="px-6 py-2.5 rounded-full bg-[#C05638] text-white text-xs font-semibold disabled:opacity-50 hover:bg-[#AC492E]"
+                  >
+                    Submit Request
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      </div>
+      )}
+
+      {/* AR Modal */}
+      {isArModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full border border-[#EBE4DA] shadow-2xl space-y-5 text-center">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F5EFEB]">
+              <span className="text-xs font-bold uppercase tracking-wider text-[#C05638]">
+                📱 WonderMagic AR Scene
+              </span>
+              <button
+                onClick={() => {
+                  setIsArModalOpen(false);
+                  setIsPlayingAr(false);
+                }}
+                className="p-1 rounded-full text-[#8896AB] hover:text-[#161922]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-950 relative flex items-center justify-center">
+              <img
+                src="/src/assets/images/storybook_mockup_animated_1789747788784.jpg"
+                alt="AR Animation"
+                className={`w-full h-full object-cover ${isPlayingAr ? 'scale-108 transition-transform duration-3000' : ''}`}
+              />
+              
+              {!isPlayingAr ? (
+                <button
+                  onClick={() => setIsPlayingAr(true)}
+                  className="absolute w-14 h-14 rounded-full bg-[#C05638] text-white flex items-center justify-center shadow-lg hover:scale-105 transition cursor-pointer"
+                >
+                  <Play className="w-6 h-6 ml-0.5" />
+                </button>
+              ) : (
+                <div className="absolute top-3 left-3 px-2.5 py-1 rounded-md bg-black/70 text-white text-[10px] font-bold flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                  <span>AR Scene Playing</span>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-1">
+              <h4 className="font-serif-story font-bold text-base text-[#161922]">
+                Scan & Watch Animation
+              </h4>
+              <p className="text-xs text-[#56647A]">
+                Every physical book includes a unique QR code. Parents scan the printed page with their camera phone — no separate app required!
+              </p>
+            </div>
+
+            <button
+              onClick={() => setIsArModalOpen(false)}
+              className="w-full py-3 rounded-full bg-[#161922] text-white text-xs font-semibold"
+            >
+              Close Demo
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Page Zoom Inspection Modal */}
+      {zoomPage !== null && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 max-w-2xl w-full border border-[#EBE4DA] shadow-2xl space-y-4">
+            <div className="flex items-center justify-between pb-2 border-b border-[#F5EFEB]">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-sm text-[#161922]">
+                  Page {zoomPage} of 32: {spreads[zoomPage - 1]?.sceneTitle}
+                </span>
+              </div>
+              <button
+                onClick={() => setZoomPage(null)}
+                className="p-1 rounded-full text-[#8896AB] hover:text-[#161922]"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="aspect-[16/10] rounded-2xl overflow-hidden bg-slate-900 relative">
+              <img
+                src={spreads[zoomPage - 1]?.imageUrl}
+                alt={spreads[zoomPage - 1]?.sceneTitle}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#EBE4DA]">
+              <p className="text-xs text-[#161922] font-serif-story leading-relaxed">
+                "{spreads[zoomPage - 1]?.text}"
+              </p>
+            </div>
+
+            <div className="flex items-center justify-between pt-2">
+              <button
+                onClick={() => setZoomPage(Math.max(1, zoomPage - 1))}
+                disabled={zoomPage === 1}
+                className="px-4 py-2 rounded-full border border-[#D5CDC2] text-xs font-semibold disabled:opacity-40"
+              >
+                Previous Page
+              </button>
+              <button
+                onClick={() => setZoomPage(Math.min(32, zoomPage + 1))}
+                disabled={zoomPage === 32}
+                className="px-4 py-2 rounded-full border border-[#D5CDC2] text-xs font-semibold disabled:opacity-40"
+              >
+                Next Page
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Checkout Modal */}
+      {isCheckoutModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full border border-[#EBE4DA] shadow-2xl space-y-6">
+            {orderComplete ? (
+              <div className="text-center py-6 space-y-4">
+                <div className="w-16 h-16 rounded-full bg-[#16A34A]/10 text-[#16A34A] flex items-center justify-center mx-auto">
+                  <Check className="w-8 h-8" />
+                </div>
+                <h3 className="font-serif-story font-bold text-2xl text-[#161922]">
+                  Storybook Order Placed!
+                </h3>
+                <p className="text-xs text-[#56647A] max-w-sm mx-auto">
+                  Thank you! Your personalized keepsake for <strong>{preview.childName}</strong> is now moving to our Bengaluru printing house.
+                </p>
+                <div className="p-4 rounded-2xl bg-[#FAF8F5] border border-[#EBE4DA] text-xs text-[#56647A] text-left space-y-1">
+                  <div className="flex justify-between">
+                    <span>Order Number:</span>
+                    <strong className="text-[#161922]">#WV-84920</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Estimated Delivery:</span>
+                    <strong className="text-[#161922]">3-5 Business Days</strong>
+                  </div>
+                </div>
+                <button
+                  onClick={() => {
+                    setIsCheckoutModalOpen(false);
+                    onBack();
+                  }}
+                  className="w-full py-3.5 rounded-full bg-[#C05638] text-white font-semibold text-sm hover:bg-[#AC492E]"
+                >
+                  Return to Home
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-[#F5EFEB]">
+                  <h3 className="font-serif-story font-bold text-xl text-[#161922]">
+                    Order Summary
+                  </h3>
+                  <button
+                    onClick={() => setIsCheckoutModalOpen(false)}
+                    className="p-1 rounded-full text-[#8896AB] hover:text-[#161922]"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="space-y-2.5 text-xs text-[#56647A]">
+                  <div className="flex justify-between">
+                    <span>{preview.storyTitle} ({preview.childName}'s Edition)</span>
+                    <strong className="text-[#161922]">
+                      ₹{selectedFormat === 'digital' ? 299 : selectedFormat === 'bundle-2' ? 1499 : selectedFormat === 'bundle-3' ? 1999 : 999}
+                    </strong>
+                  </div>
+                  {arAddon && (
+                    <div className="flex justify-between">
+                      <span>Bring it to life (AR View)</span>
+                      <strong className="text-[#161922]">+₹399</strong>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Shipping across India</span>
+                    <span className="text-[#16A34A] font-bold">FREE</span>
+                  </div>
+                  <div className="pt-3 border-t border-[#F5EFEB] flex justify-between text-sm font-bold text-[#161922]">
+                    <span>Total Amount</span>
+                    <span className="text-[#C05638] font-serif-story text-lg">
+                      ₹{(selectedFormat === 'digital' ? 299 : selectedFormat === 'bundle-2' ? 1499 : selectedFormat === 'bundle-3' ? 1999 : 999) + (arAddon ? 399 : 0)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-2xl bg-[#FAF8F5] border border-[#EBE4DA] space-y-2 text-xs">
+                  <span className="font-bold text-[#161922] block">Delivery Details</span>
+                  <input
+                    type="text"
+                    placeholder="Delivery Address / City / Pincode"
+                    defaultValue="12th Main, Indiranagar, Bengaluru, 560038"
+                    className="w-full px-3 py-2 rounded-xl border border-[#D5CDC2] text-xs text-[#161922] bg-white outline-none"
+                  />
+                </div>
+
+                <button
+                  onClick={handlePlaceOrder}
+                  className="w-full py-3.5 rounded-full bg-[#C05638] hover:bg-[#AC492E] text-white font-semibold text-sm shadow-sm transition"
+                >
+                  Complete Order • ₹{(selectedFormat === 'digital' ? 299 : selectedFormat === 'bundle-2' ? 1499 : selectedFormat === 'bundle-3' ? 1999 : 999) + (arAddon ? 399 : 0)}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
-

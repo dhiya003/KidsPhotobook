@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
-import { PersonalizedStoryPreview, BookFormat, Order } from '../types';
+import { PersonalizedStoryPreview, BookFormat, Order, BookSizeOption } from '../types';
 import { INITIAL_PRICING } from '../data/mockStories';
 import { 
-  Sparkles, 
-  Check, 
   X, 
+  Check, 
   ShieldCheck, 
+  Download, 
+  BookOpen, 
+  Gift, 
+  Truck, 
   CreditCard, 
-  MapPin, 
-  Tag, 
+  Lock, 
   ArrowRight,
-  Video,
-  Palette,
-  Truck,
-  Download
+  Sparkles,
+  PhoneCall,
+  Volume2
 } from 'lucide-react';
 
 interface CheckoutModalProps {
@@ -24,12 +25,6 @@ interface CheckoutModalProps {
   onOrderSuccess: (order: Order) => void;
 }
 
-const INDIAN_STATES = [
-  'Andhra Pradesh', 'Assam', 'Bihar', 'Delhi NCR', 'Goa', 'Gujarat', 
-  'Haryana', 'Karnataka', 'Kerala', 'Madhya Pradesh', 'Maharashtra', 
-  'Punjab', 'Rajasthan', 'Tamil Nadu', 'Telangana', 'Uttar Pradesh', 'West Bengal'
-];
-
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   preview,
   format,
@@ -39,107 +34,85 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 }) => {
   if (!isOpen) return null;
 
-  const currentPlan = INITIAL_PRICING.find((p) => p.format === format) || INITIAL_PRICING[1];
+  const [selectedFormat, setSelectedFormat] = useState<BookFormat>(format);
+  const [selectedSize, setSelectedSize] = useState<BookSizeOption>('8.5x8.5');
+  const [includeGiftWrap, setIncludeGiftWrap] = useState(false);
+  const [includeAudioNarrator, setIncludeAudioNarrator] = useState(false);
 
-  // Form State
-  const [customerName, setCustomerName] = useState('Priya Sharma');
-  const [email, setEmail] = useState('priya.sharma@example.com');
-  const [phone, setPhone] = useState('9876543210');
+  // Parent & Shipping Info
+  const [parentName, setParentName] = useState('Priya Sharma');
+  const [parentEmail, setParentEmail] = useState('priya.sharma@example.com');
+  const [parentPhone, setParentPhone] = useState('+91 98765 43210');
+  const [shippingAddress, setShippingAddress] = useState('Flat 402, Sunshine Heights, Indiranagar');
+  const [shippingCity, setShippingCity] = useState('Bengaluru');
+  const [shippingState, setShippingState] = useState('Karnataka');
+  const [shippingPincode, setShippingPincode] = useState('560038');
 
-  // Address (for physical formats)
-  const [street, setStreet] = useState('Flat 402, Lotus Residency, Indiranagar');
-  const [city, setCity] = useState('Bengaluru');
-  const [state, setState] = useState('Karnataka');
-  const [pincode, setPincode] = useState('560038');
-
-  // Add-ons
-  const [addVideo, setAddVideo] = useState(false);
-  const [addColoringBook, setAddColoringBook] = useState(false);
-
-  // Coupon
-  const [couponCode, setCouponCode] = useState('VERVEFIRST');
-  const [couponApplied, setCouponApplied] = useState(true);
-  const [couponDiscount, setCouponDiscount] = useState(100);
-
-  // Payment State
+  // Checkout State
   const [isProcessing, setIsProcessing] = useState(false);
-  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+  const [orderComplete, setOrderComplete] = useState<Order | null>(null);
 
-  // Calculations
-  const basePrice = currentPlan.price;
-  const videoPrice = addVideo ? 299 : 0;
-  const coloringPrice = addColoringBook ? 149 : 0;
-  const shippingFee = format === 'digital' ? 0 : 0; // Free shipping promo across India
-  const discountAmount = couponApplied ? couponDiscount : 0;
-  const totalAmount = Math.max(0, basePrice + videoPrice + coloringPrice - discountAmount);
+  const activePlan = INITIAL_PRICING.find(p => p.format === selectedFormat) || INITIAL_PRICING[1];
+  const isDigitalOnly = selectedFormat === 'digital';
 
-  const applyCoupon = () => {
-    if (couponCode.toUpperCase() === 'VERVEFIRST') {
-      setCouponApplied(true);
-      setCouponDiscount(100);
-    } else if (couponCode.toUpperCase() === 'HERO20') {
-      setCouponApplied(true);
-      setCouponDiscount(Math.round(basePrice * 0.2));
-    } else {
-      alert('Invalid coupon code. Try VERVEFIRST or HERO20');
-    }
-  };
+  // Calculate Total
+  const basePrice = activePlan.price;
+  const giftWrapPrice = (!isDigitalOnly && includeGiftWrap) ? 99 : 0;
+  const audioPrice = includeAudioNarrator ? 149 : 0;
+  const finalTotal = basePrice + giftWrapPrice + audioPrice;
 
-  const handleRazorpayPayment = async () => {
-    if (!customerName || !email || !phone) {
-      alert('Please fill in your contact information.');
-      return;
-    }
-
-    if (format !== 'digital' && (!street || !city || !pincode)) {
-      alert('Please fill in your complete delivery address.');
-      return;
-    }
-
+  const handlePlaceOrder = () => {
     setIsProcessing(true);
-
-    // Simulate Razorpay gateway transaction
-    await new Promise((resolve) => setTimeout(resolve, 1200));
-
-    const newOrder: Order = {
-      id: `VRV-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`,
-      previewId: preview.id,
-      storyTitle: preview.storyTitle,
-      childName: preview.childName,
-      customerName,
-      email,
-      phone,
-      format,
-      language: preview.language,
-      amount: totalAmount,
-      shippingAddress: format !== 'digital' ? { street, city, state, pincode } : undefined,
-      status: format === 'digital' ? 'Ready for Download' : 'Payment Received',
-      trackingNumber: format !== 'digital' ? `BD-${Math.floor(100000000 + Math.random() * 900000000)}` : undefined,
-      createdAt: new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-      }),
-      pdfDownloadUrl: '#'
-    };
-
-    setIsProcessing(false);
-    setCompletedOrder(newOrder);
-    onOrderSuccess(newOrder);
+    setTimeout(() => {
+      const newOrder: Order = {
+        id: `VRV-${Math.floor(100000 + Math.random() * 900000)}`,
+        previewId: preview.id,
+        storyTitle: preview.storyTitle,
+        childName: preview.childName,
+        customerName: parentName,
+        email: parentEmail,
+        phone: parentPhone,
+        shippingAddress: isDigitalOnly ? undefined : {
+          street: shippingAddress,
+          city: shippingCity,
+          state: shippingState,
+          pincode: shippingPincode
+        },
+        format: selectedFormat,
+        packageTitle: activePlan.title,
+        selectedSize: isDigitalOnly ? undefined : selectedSize,
+        language: preview.language,
+        amount: finalTotal,
+        quantity: activePlan.bundleQuantity || 1,
+        includesEbook: true,
+        status: isDigitalOnly ? 'Delivered' : 'Queued for Print',
+        trackingNumber: isDigitalOnly ? undefined : `TRK-VRV-${Math.floor(100000 + Math.random() * 900000)}`,
+        pdfDownloadUrl: `/downloads/${preview.childName.toLowerCase()}-keepsake-ebook.pdf`,
+        createdAt: new Date().toISOString()
+      };
+      setIsProcessing(false);
+      setOrderComplete(newOrder);
+      onOrderSuccess(newOrder);
+    }, 1200);
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-[#162032]/80 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#162032]/85 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
       <div className="bg-white rounded-3xl max-w-2xl w-full border border-[#E8DFD1] shadow-2xl overflow-hidden my-6">
         {/* Header */}
         <div className="p-6 bg-[#FAF7F2] border-b border-[#E8DFD1] flex items-center justify-between">
-          <div>
-            <span className="text-xs font-bold text-[#EB5E44] uppercase tracking-wider">
-              Secure Checkout
-            </span>
-            <h3 className="font-display text-xl font-bold text-[#162032]">
-              {completedOrder ? 'Order Confirmed!' : `Order ${currentPlan.title}`}
-            </h3>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-[#EB5E44]/10 border border-[#EB5E44]/20 flex items-center justify-center text-[#EB5E44]">
+              <Lock className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#EB5E44]">
+                Secure 256-Bit Checkout
+              </span>
+              <h3 className="font-display text-xl font-bold text-[#162032]">
+                {orderComplete ? 'Order Confirmed!' : `Unlock & Order ${preview.childName}’s Storybook`}
+              </h3>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -149,324 +122,263 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </button>
         </div>
 
-        {/* COMPLETED ORDER VIEW */}
-        {completedOrder ? (
+        {/* ORDER COMPLETE STATE */}
+        {orderComplete ? (
           <div className="p-8 text-center space-y-6">
-            <div className="w-16 h-16 rounded-3xl bg-[#4EAA8C] text-white flex items-center justify-center mx-auto shadow-lg shadow-[#4EAA8C]/20">
-              <Check className="w-8 h-8" />
+            <div className="w-16 h-16 rounded-full bg-[#4EAA8C]/15 border-2 border-[#4EAA8C] text-[#4EAA8C] flex items-center justify-center mx-auto">
+              <Check className="w-8 h-8 stroke-[3]" />
             </div>
 
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-[#4EAA8C]">
-                Payment Successful
+                Order #{orderComplete.id} Placed Successfully
               </span>
-              <h2 className="font-display text-3xl font-extrabold text-[#162032] mt-1">
-                {preview.childName}’s Story is on its way!
-              </h2>
-              <p className="text-sm text-[#56647A] mt-2">
-                Order ID: <span className="font-bold text-[#162032]">{completedOrder.id}</span>
+              <h3 className="font-display text-2xl font-bold text-[#162032] mt-1">
+                Thank you, {orderComplete.customerName}!
+              </h3>
+              <p className="text-xs text-[#56647A] mt-1.5 max-w-md mx-auto">
+                {isDigitalOnly
+                  ? 'Your instant 300 DPI high-res eBook is ready to read and download right now.'
+                  : 'Your Hardcover keepsake has entered our editorial quality check and POD printing queue. Your Instant eBook is also ready immediately!'}
               </p>
             </div>
 
-            <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] text-left space-y-2 text-xs">
-              <div className="flex justify-between">
-                <span className="text-[#56647A]">Storybook:</span>
-                <span className="font-bold text-[#162032]">{preview.storyTitle}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#56647A]">Child Name:</span>
-                <span className="font-bold text-[#162032]">{preview.childName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#56647A]">Format:</span>
-                <span className="font-bold capitalize text-[#162032]">{completedOrder.format}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-[#56647A]">Amount Paid:</span>
-                <span className="font-bold text-[#EB5E44]">₹{completedOrder.amount}</span>
-              </div>
-              {completedOrder.trackingNumber && (
-                <div className="flex justify-between pt-2 border-t border-[#E8DFD1]">
-                  <span className="text-[#56647A]">Courier Tracking:</span>
-                  <span className="font-bold text-[#3B97D3]">{completedOrder.trackingNumber}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-col sm:flex-row items-center gap-3">
-              <button
-                onClick={() => {
-                  alert(`Downloading high-resolution print PDF for ${preview.childName}...`);
-                }}
-                className="w-full py-3 rounded-xl bg-[#EB5E44] text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md hover:bg-[#D94F36]"
-              >
-                <Download className="w-4 h-4" />
-                <span>Download Digital Story PDF</span>
-              </button>
-
-              <button
-                onClick={onClose}
-                className="w-full py-3 rounded-xl border border-[#E8DFD1] text-[#162032] text-xs font-bold hover:bg-[#FAF7F2]"
-              >
-                Go to My Stories
-              </button>
-            </div>
-          </div>
-        ) : (
-          /* CHECKOUT FORM VIEW */
-          <div className="p-6 sm:p-8 space-y-6 max-h-[75vh] overflow-y-auto">
-            {/* Story Quick Summary */}
-            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center justify-between">
+            {/* Instant eBook Download Card */}
+            <div className="p-5 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
               <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl overflow-hidden bg-[#162032] shrink-0">
+                <div className="w-12 h-12 rounded-xl bg-white border border-[#E8DFD1] overflow-hidden shrink-0">
                   <img src={preview.coverUrl} alt="Cover" className="w-full h-full object-cover" />
                 </div>
                 <div>
-                  <h4 className="font-display font-bold text-sm text-[#162032]">{preview.storyTitle}</h4>
-                  <p className="text-xs text-[#56647A]">
-                    Hero: <span className="font-semibold text-[#EB5E44]">{preview.childName}</span> • {preview.language}
+                  <h4 className="font-display font-bold text-sm text-[#162032]">
+                    Instant High-Res eBook (PDF)
+                  </h4>
+                  <p className="text-[11px] text-[#56647A]">
+                    32 Full-Color Pages • Print-Ready 300 DPI • All Devices
                   </p>
                 </div>
               </div>
-              <span className="font-display text-lg font-bold text-[#162032]">
-                ₹{currentPlan.price}
-              </span>
-            </div>
 
-            {/* Section 19: Add-on Upsells */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-[#162032] uppercase tracking-wider block">
-                Recommended Keepsake Add-ons
-              </span>
-
-              <div
-                onClick={() => setAddVideo(!addVideo)}
-                className={`p-3.5 rounded-2xl border cursor-pointer flex items-center justify-between transition-all ${
-                  addVideo ? 'border-[#EB5E44] bg-[#FFF8F5]' : 'border-[#E8DFD1] hover:border-[#162032]'
-                }`}
+              <button
+                onClick={() => alert(`Downloading high-res 32-page eBook for ${preview.childName}...`)}
+                className="px-5 py-2.5 rounded-xl bg-[#162032] hover:bg-[#EB5E44] text-white text-xs font-bold transition-colors flex items-center gap-2 shrink-0 shadow-sm"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center justify-center text-[#EB5E44]">
-                    <Video className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h5 className="font-display font-bold text-xs text-[#162032]">
-                      Personalized Animated Story Video
-                    </h5>
-                    <p className="text-[11px] text-[#56647A]">
-                      Watch {preview.childName} come to life in a 2-minute narrated video
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#162032]">+₹299</span>
-                  <input
-                    type="checkbox"
-                    checked={addVideo}
-                    readOnly
-                    className="w-4 h-4 rounded-sm accent-[#EB5E44]"
-                  />
-                </div>
-              </div>
+                <Download className="w-4 h-4" />
+                <span>Download eBook</span>
+              </button>
+            </div>
 
-              <div
-                onClick={() => setAddColoringBook(!addColoringBook)}
-                className={`p-3.5 rounded-2xl border cursor-pointer flex items-center justify-between transition-all ${
-                  addColoringBook ? 'border-[#EB5E44] bg-[#FFF8F5]' : 'border-[#E8DFD1] hover:border-[#162032]'
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center justify-center text-[#EB5E44]">
-                    <Palette className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <h5 className="font-display font-bold text-xs text-[#162032]">
-                      Personalized Printable Coloring Book
-                    </h5>
-                    <p className="text-[11px] text-[#56647A]">
-                      16 printable coloring pages featuring {preview.childName}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-bold text-[#162032]">+₹149</span>
-                  <input
-                    type="checkbox"
-                    checked={addColoringBook}
-                    readOnly
-                    className="w-4 h-4 rounded-sm accent-[#EB5E44]"
-                  />
-                </div>
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="px-8 py-3 rounded-xl bg-[#EB5E44] text-white text-xs font-bold transition-all shadow-md"
+            >
+              Done & Return to Studio
+            </button>
+          </div>
+        ) : (
+          /* CHECKOUT FORM */
+          <div className="p-6 sm:p-8 space-y-6 max-h-[75vh] overflow-y-auto">
+            {/* Package Selector */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#162032] block">
+                Selected Keepsake Package:
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {INITIAL_PRICING.map((plan) => (
+                  <button
+                    key={plan.format}
+                    type="button"
+                    onClick={() => setSelectedFormat(plan.format)}
+                    className={`p-3.5 rounded-2xl border text-left transition-all ${
+                      selectedFormat === plan.format
+                        ? 'bg-[#FFF8F5] border-[#EB5E44] ring-2 ring-[#EB5E44]/20'
+                        : 'bg-[#FAF7F2] border-[#E8DFD1] hover:border-[#162032]'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-display font-bold text-xs text-[#162032]">
+                        {plan.title}
+                      </span>
+                      <span className="font-display font-extrabold text-sm text-[#EB5E44]">
+                        ₹{plan.price}
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-[#56647A] block mt-0.5">
+                      {plan.subtitle}
+                    </span>
+                  </button>
+                ))}
               </div>
             </div>
 
-            {/* Customer Details */}
-            <div className="space-y-3">
-              <span className="text-xs font-bold text-[#162032] uppercase tracking-wider block">
-                Parent Contact Details
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <input
-                  type="text"
-                  placeholder="Your Full Name"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  className="px-3.5 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                />
-                <input
-                  type="email"
-                  placeholder="Email for digital delivery & receipts"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="px-3.5 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                />
-                <div className="sm:col-span-2 flex items-center">
-                  <span className="px-3 py-2.5 rounded-l-xl bg-[#FAF7F2] border border-r-0 border-[#E8DFD1] text-xs font-bold text-[#56647A]">
-                    +91
-                  </span>
-                  <input
-                    type="tel"
-                    placeholder="10-digit mobile number"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-r-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                  />
-                </div>
-              </div>
-            </div>
-
-            {/* Shipping Address (Physical format) */}
-            {format !== 'digital' && (
-              <div className="space-y-3 pt-3 border-t border-[#F0E9DF]">
+            {/* Hardcover Size Selection (If Physical) */}
+            {!isDigitalOnly && (
+              <div className="p-4 bg-[#FAF7F2] rounded-2xl border border-[#E8DFD1] space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-[#162032] uppercase tracking-wider flex items-center gap-1.5">
-                    <Truck className="w-3.5 h-3.5 text-[#EB5E44]" />
-                    Delivery Address in India
+                  <span className="text-xs font-bold text-[#162032]">
+                    Format & Dimension:
                   </span>
-                  <span className="text-[11px] font-bold text-[#4EAA8C]">
-                    Free Express Shipping
+                  <span className="text-[10px] font-bold text-[#4EAA8C]">
+                    170 GSM Silk Art Interior
                   </span>
                 </div>
-
-                <div className="space-y-2.5">
-                  <input
-                    type="text"
-                    placeholder="House / Flat No., Street, Landmark"
-                    value={street}
-                    onChange={(e) => setStreet(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                  />
-                  <div className="grid grid-cols-3 gap-2">
-                    <input
-                      type="text"
-                      placeholder="City"
-                      value={city}
-                      onChange={(e) => setCity(e.target.value)}
-                      className="px-3.5 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                    />
-                    <select
-                      value={state}
-                      onChange={(e) => setState(e.target.value)}
-                      className="px-3 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none bg-white"
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { size: '8.5x8.5' as BookSizeOption, label: '8.5 × 8.5"', desc: 'Square Deluxe' },
+                    { size: '8x8' as BookSizeOption, label: '8 × 8"', desc: 'Standard' },
+                    { size: 'A5' as BookSizeOption, label: 'A5', desc: 'Compact' }
+                  ].map((spec) => (
+                    <button
+                      key={spec.size}
+                      type="button"
+                      onClick={() => setSelectedSize(spec.size)}
+                      className={`p-2.5 rounded-xl border text-center transition-all ${
+                        selectedSize === spec.size
+                          ? 'bg-white border-[#EB5E44] text-[#EB5E44] font-bold shadow-xs'
+                          : 'bg-white/60 border-[#E8DFD1] text-[#56647A]'
+                      }`}
                     >
-                      {INDIAN_STATES.map((st) => (
-                        <option key={st} value={st}>{st}</option>
-                      ))}
-                    </select>
-                    <input
-                      type="text"
-                      placeholder="6-digit Pincode"
-                      value={pincode}
-                      onChange={(e) => setPincode(e.target.value)}
-                      className="px-3.5 py-2.5 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none focus:border-[#EB5E44]"
-                    />
-                  </div>
+                      <span className="text-xs block font-bold">{spec.label}</span>
+                      <span className="text-[9px] text-[#8896AB] block">{spec.desc}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
 
-            {/* Coupon Section */}
-            <div className="pt-2 border-t border-[#F0E9DF]">
-              <div className="flex items-center gap-2">
-                <input
-                  type="text"
-                  placeholder="Have a coupon code?"
-                  value={couponCode}
-                  onChange={(e) => setCouponCode(e.target.value)}
-                  className="flex-1 px-3.5 py-2 rounded-xl border border-[#E8DFD1] text-xs uppercase text-[#162032] outline-none focus:border-[#EB5E44]"
-                />
-                <button
-                  type="button"
-                  onClick={applyCoupon}
-                  className="px-4 py-2 rounded-xl bg-[#162032] hover:bg-[#EB5E44] text-white text-xs font-bold transition-colors"
-                >
-                  Apply
-                </button>
-              </div>
-              {couponApplied && (
-                <p className="text-[11px] font-bold text-[#4EAA8C] mt-1.5 flex items-center gap-1">
-                  <Check className="w-3.5 h-3.5" />
-                  Coupon code "{couponCode}" applied: ₹{couponDiscount} off!
-                </p>
-              )}
-            </div>
+            {/* Add-ons */}
+            <div className="space-y-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-[#162032] block">
+                Personalized Keepsake Add-ons:
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {!isDigitalOnly && (
+                  <label className="p-3 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center gap-3 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={includeGiftWrap}
+                      onChange={(e) => setIncludeGiftWrap(e.target.checked)}
+                      className="w-4 h-4 rounded-sm accent-[#EB5E44]"
+                    />
+                    <div className="text-xs">
+                      <span className="font-bold text-[#162032] flex items-center gap-1">
+                        <Gift className="w-3.5 h-3.5 text-[#EB5E44]" /> Luxury Gift Wrap (+₹99)
+                      </span>
+                      <span className="text-[10px] text-[#56647A] block">Gold ribbon & wax seal box</span>
+                    </div>
+                  </label>
+                )}
 
-            {/* Price Breakdown */}
-            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] space-y-2 text-xs">
-              <div className="flex justify-between text-[#56647A]">
-                <span>{currentPlan.title}:</span>
-                <span className="text-[#162032]">₹{basePrice}</span>
-              </div>
-              {addVideo && (
-                <div className="flex justify-between text-[#56647A]">
-                  <span>Personalized Animated Story Video:</span>
-                  <span className="text-[#162032]">+₹{videoPrice}</span>
-                </div>
-              )}
-              {addColoringBook && (
-                <div className="flex justify-between text-[#56647A]">
-                  <span>Personalized Coloring Book:</span>
-                  <span className="text-[#162032]">+₹{coloringPrice}</span>
-                </div>
-              )}
-              {format !== 'digital' && (
-                <div className="flex justify-between text-[#56647A]">
-                  <span>Shipping (India-wide):</span>
-                  <span className="text-[#4EAA8C] font-bold">FREE</span>
-                </div>
-              )}
-              {couponApplied && (
-                <div className="flex justify-between text-[#4EAA8C]">
-                  <span>Promo Discount:</span>
-                  <span>-₹{discountAmount}</span>
-                </div>
-              )}
-              <div className="flex justify-between pt-2 border-t border-[#E8DFD1] font-bold text-sm text-[#162032]">
-                <span>Total Amount:</span>
-                <span className="text-[#EB5E44] font-display text-lg">₹{totalAmount}</span>
+                <label className="p-3 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center gap-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={includeAudioNarrator}
+                    onChange={(e) => setIncludeAudioNarrator(e.target.checked)}
+                    className="w-4 h-4 rounded-sm accent-[#EB5E44]"
+                  />
+                  <div className="text-xs">
+                    <span className="font-bold text-[#162032] flex items-center gap-1">
+                      <Volume2 className="w-3.5 h-3.5 text-[#3B97D3]" /> Audio Story Narrator (+₹149)
+                    </span>
+                    <span className="text-[10px] text-[#56647A] block">Professional voice narration audio</span>
+                  </div>
+                </label>
               </div>
             </div>
 
-            {/* Razorpay Pay CTA */}
-            <button
-              id="razorpay-pay-btn"
-              onClick={handleRazorpayPayment}
-              disabled={isProcessing}
-              className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#2B84EA] to-[#1258BC] hover:opacity-95 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2"
-            >
-              {isProcessing ? (
-                <span>Connecting to Razorpay...</span>
-              ) : (
-                <>
-                  <CreditCard className="w-4 h-4" />
-                  <span>Pay ₹{totalAmount} via Razorpay (UPI, Cards, NetBanking)</span>
-                </>
-              )}
-            </button>
+            {/* Parent Contact & Address */}
+            <div className="space-y-3 pt-2">
+              <h4 className="font-display font-bold text-xs uppercase tracking-wider text-[#162032]">
+                Customer & Shipping Details
+              </h4>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                <div>
+                  <label className="text-[11px] font-bold text-[#56647A] block mb-1">Parent Name</label>
+                  <input
+                    type="text"
+                    value={parentName}
+                    onChange={(e) => setParentName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold text-[#56647A] block mb-1">Email for Instant eBook</label>
+                  <input
+                    type="email"
+                    value={parentEmail}
+                    onChange={(e) => setParentEmail(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                  />
+                </div>
+                <div>
+                  <label className="text-[11px] font-bold text-[#56647A] block mb-1">WhatsApp for Tracking</label>
+                  <input
+                    type="tel"
+                    value={parentPhone}
+                    onChange={(e) => setParentPhone(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                  />
+                </div>
+              </div>
 
-            <div className="text-center flex items-center justify-center gap-2 text-[11px] text-[#56647A]">
-              <ShieldCheck className="w-4 h-4 text-[#4EAA8C]" />
-              <span>100% Encrypted 256-Bit Payment Gateway with Instant Refund Protection</span>
+              {!isDigitalOnly && (
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                  <div className="sm:col-span-2">
+                    <label className="text-[11px] font-bold text-[#56647A] block mb-1">Street Address</label>
+                    <input
+                      type="text"
+                      value={shippingAddress}
+                      onChange={(e) => setShippingAddress(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-[#56647A] block mb-1">City / State</label>
+                    <input
+                      type="text"
+                      value={`${shippingCity}, ${shippingState}`}
+                      onChange={(e) => setShippingCity(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[11px] font-bold text-[#56647A] block mb-1">PIN Code</label>
+                    <input
+                      type="text"
+                      value={shippingPincode}
+                      onChange={(e) => setShippingPincode(e.target.value)}
+                      className="w-full px-3 py-2 rounded-xl border border-[#E8DFD1] text-xs text-[#162032] outline-none"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Total Summary */}
+            <div className="p-4 rounded-2xl bg-[#FAF7F2] border border-[#E8DFD1] flex items-center justify-between">
+              <div>
+                <span className="text-xs text-[#56647A] block">Order Total (Taxes & Shipping Included)</span>
+                <span className="font-display text-2xl font-extrabold text-[#162032]">
+                  ₹{finalTotal}
+                </span>
+              </div>
+
+              <button
+                id="modal-complete-order-btn"
+                onClick={handlePlaceOrder}
+                disabled={isProcessing}
+                className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#F5B027] via-[#EB5E44] to-[#D94F36] hover:opacity-95 text-white font-extrabold text-sm shadow-lg shadow-[#EB5E44]/25 transition-all flex items-center gap-2 cursor-pointer"
+              >
+                {isProcessing ? (
+                  <span>Processing Payment...</span>
+                ) : (
+                  <>
+                    <CreditCard className="w-4 h-4" />
+                    <span>PAY & UNLOCK ₹{finalTotal}</span>
+                  </>
+                )}
+              </button>
             </div>
           </div>
         )}

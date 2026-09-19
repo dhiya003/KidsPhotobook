@@ -1,477 +1,603 @@
-import { Story } from '../types';
+import { Story, PricingPlan } from '../types';
 
-export const STORIES: Story[] = [
+export const INITIAL_PRICING: PricingPlan[] = [
   {
-    id: 'magical-space-adventure',
-    slug: 'the-magical-space-adventure',
-    title: 'The Magical Space Adventure',
-    subtitle: 'Your little astronaut is about to discover the universe.',
-    description: 'When night falls, a constellation whispers your child’s name. Together with their favorite cosmic creature, they embark on a voyage across glittering asteroid belts, ringed planets, and swirling nebulas.',
-    coverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
-    boyCoverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
-    girlCoverImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
-    ageRange: '4–6',
-    category: 'Space',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Encourages scientific curiosity and fascination with the night sky',
-      'Teaches gentle courage when venturing into the unknown',
-      'Reinforces problem-solving alongside friendly cosmic companions'
-    ],
-    moralObjective: 'Curiosity, Courage, and Kindness across the Stars',
-    featured: true,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Starlit Bedroom',
-        textTemplate: 'Up in their bedroom, {{childName}} stared out of the window into the deep velvety sky. Tonight, the North Star sparkled with an unusual golden shimmer.',
-        defaultImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
-        boyImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
-        girlImage: '/src/assets/images/space_girl_window_1789746562044.jpg',
-        boyFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
-        moralFocus: 'Imagination'
-      },
-      {
-        pageNumber: 2,
-        sceneTitle: 'The Golden Compass',
-        textTemplate: 'Under their pillow, {{childName}} discovered a shining silver astronaut badge marked with their favorite color, {{favoriteColor}}. A soft chime sounded—the Starcruiser was waiting!',
-        defaultImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
-        boyImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
-        girlImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
-        boyFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
-        girlFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
-        moralFocus: 'Adventure Begins'
-      },
-      {
-        pageNumber: 3,
-        sceneTitle: 'Meeting the Cosmic Companion',
-        textTemplate: 'Floating through the rings of Saturn, {{childName}} heard a cheerful chirp. It was a friendly celestial {{favoriteAnimal}} made of stardust who nodded warmly as if they had been lifelong friends.',
-        defaultImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
-        boyImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
-        girlImage: '/src/assets/images/space_girl_planet_1789746528883.jpg',
-        boyFaceSlot: { top: 32, left: 42, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 32, left: 42, width: 22, height: 26, rotate: 0 },
-        moralFocus: 'Friendship'
-      },
-      {
-        pageNumber: 4,
-        sceneTitle: 'The Whispering Moon Crater',
-        textTemplate: 'Together, {{childName}} and their starlight friend hopped over craters of powdered moon-sugar, leaving glowing footprints that read: "Always Keep Wondering."',
-        defaultImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
-        boyImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
-        girlImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
-        boyFaceSlot: { top: 34, left: 46, width: 24, height: 28, rotate: 0 },
-        girlFaceSlot: { top: 36, left: 46, width: 24, height: 28, rotate: 0 },
-        moralFocus: 'Discovery'
-      },
-      {
-        pageNumber: 5,
-        sceneTitle: 'Home Before Morning Glow',
-        textTemplate: 'Gently steering the ship back home, {{childName}} knew that no matter how big the universe is, the greatest wonders live right inside their own brave heart.',
-        defaultImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
-        boyImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
-        girlImage: '/src/assets/images/space_girl_window_1789746562044.jpg',
-        boyFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 38, left: 47, width: 22, height: 26, rotate: 0 },
-        moralFocus: 'Security and Love'
-      }
+    format: 'digital',
+    title: 'eBook',
+    subtitle: 'Instant Digital Storybook',
+    price: 299,
+    originalPrice: 499,
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: 'Instant high-resolution PDF download for tablets, phones, and digital reading.',
+    features: [
+      'Instant download',
+      'High-quality PDF',
+      'Read on any device'
     ]
   },
   {
-    id: 'secret-jungle-adventure',
-    slug: 'the-secret-jungle-adventure',
-    title: 'The Secret Jungle Adventure',
-    subtitle: 'Into the emerald canopy where ancient rivers sing.',
-    description: 'Deep inside the whispering Western Ghats, a hidden waterfall calls for a brave explorer. Guided by playful langurs and wise elephants, your child learns the rhythm of nature.',
-    coverImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg',
-    boyCoverImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-    girlCoverImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg',
-    ageRange: '4–6',
-    category: 'Adventure',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Kannada', 'Malayalam'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Fosters deep love and respect for wildlife and Indian forests',
-      'Teaches mindfulness through listening to river rhythms',
-      'Celebrates teamwork with jungle animals'
-    ],
-    moralObjective: 'Respect for Nature and Peaceful Harmony',
-    featured: true,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Trail of Emerald Ferns',
-        textTemplate: 'With their small explorer hat tilted just right, {{childName}} stepped onto a dewy trail shaded by giant teak trees and swaying bamboo.',
-        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
-        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-      },
-      {
-        pageNumber: 2,
-        sceneTitle: 'The Elephant’s Melody',
-        textTemplate: 'By the riverbend, a gentle baby elephant trumpeted softly. {{childName}} offered a sweet mango and was rewarded with a joyful splash of cool crystal water.',
-        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
-        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-      },
-      {
-        pageNumber: 3,
-        sceneTitle: 'The Bridge of Vines',
-        textTemplate: 'To reach the hidden temple orchid, {{childName}} balanced carefully along a singing root bridge, cheering: "Step by step, I can do anything!"',
-        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
-        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-      },
-      {
-        pageNumber: 4,
-        sceneTitle: 'Firefly Lanterns',
-        textTemplate: 'As twilight painted the canopy in shades of {{favoriteColor}}, thousands of tiny fireflies danced in a circle around {{childName}}, illuminating the path with golden warmth.',
-        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        boyImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
-        girlImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
-        boyFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-        girlFaceSlot: { top: 34, left: 44, width: 22, height: 26, rotate: 0 },
-      }
+    format: 'hardcover',
+    title: 'Hardcover Storybook + eBook',
+    subtitle: 'Heirloom Keepsake Edition',
+    badge: 'Most Popular',
+    popular: true,
+    price: 999,
+    originalPrice: 1499,
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: 'Custom hardcover keepsake printed on 200 GSM silk paper with gloss-coated cover.',
+    features: [
+      'Printed hardcover book',
+      'Instant eBook included',
+      'Archival heirloom print'
     ]
   },
   {
-    id: 'journey-through-india',
-    slug: 'my-journey-through-india',
-    title: 'My Journey Through India',
-    subtitle: 'From snowy Himalayan peaks to tranquil Kerala backwaters.',
-    description: 'A magical heritage train named Pawan carries your child across colorful bazaars, desert dunes of Rajasthan, sunlit tea gardens of Assam, and festival celebrations full of lights.',
-    coverImage: '/src/assets/images/india_train_animated_1789747625174.jpg',
-    ageRange: '6–8',
-    category: 'India',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi', 'Bengali'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Celebrates India’s rich regional diversity, textiles, and traditions',
-      'Builds cultural pride and joyful geographical appreciation',
-      'Highlights unity in vibrant festivities like Diwali and Pongal'
-    ],
-    moralObjective: 'Cultural Pride, Heritage, and Warm Hospitality',
-    featured: true,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Golden Train Whistle',
-        textTemplate: 'The whistle blew with a merry tune! {{childName}} tucked their tickets into their pocket and boarded the magical express adorned with brass lanterns and marigold garlands.',
-        defaultImage: '/src/assets/images/india_train_animated_1789747625174.jpg'
-      },
-      {
-        pageNumber: 2,
-        sceneTitle: 'The Desert of Shining Stars',
-        textTemplate: 'Across the golden dunes of Jaisalmer, musicians played the folk sarangi. {{childName}} smiled as a decorated camel bowed politely to share a roasted treat.',
-        defaultImage: '/src/assets/images/india_train_animated_1789747625174.jpg'
-      },
-      {
-        pageNumber: 3,
-        sceneTitle: 'Gliding Through Palm Canals',
-        textTemplate: 'In Kerala, coconut palms bowed over the water. {{childName}} cheered as brightly colored snake boats raced past, drums beating to the joyous song of the monsoon.',
-        defaultImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg'
-      }
+    format: 'bundle-2',
+    title: '2 Storybooks + eBooks',
+    subtitle: 'For siblings / cousins',
+    badge: 'Best value',
+    popular: false,
+    price: 1599,
+    originalPrice: 2499,
+    bundleQuantity: 2,
+    includesEbook: true,
+    description: 'Two personalized hardcover books for siblings, cousins, or best friends.',
+    features: [
+      '2 hardcover books',
+      '2 eBooks',
+      'Free express shipping'
     ]
   },
   {
-    id: 'enchanted-dream-world',
-    slug: 'the-enchanted-dream-world',
-    title: 'The Enchanted Dream World',
-    subtitle: 'Where cloud-castles drift and bedtime turns to pure magic.',
-    description: 'When the moon tucks the sun into bed, a silver staircase appears outside your child’s window. Guided by the Dream Weaver bird, they visit valleys where wishes bloom like glowing flowers.',
-    coverImage: '/src/assets/images/dream_world_animated_1789747644910.jpg',
-    ageRange: '2–4',
-    category: 'Fantasy',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Calming bedtime narrative that soothes night anxiety',
-      'Sensory imagery crafted for restful relaxation',
-      'Strengthens parental bond with sweet sleep affirmations'
-    ],
-    moralObjective: 'Peaceful Sleep, Security, and Emotional Comfort',
-    featured: false,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Silver Moon Staircase',
-        textTemplate: 'Soft lullabies drifted on the breeze. {{childName}} took the first step onto the cloud carpet, surrounded by floating feather-lanterns.',
-        defaultImage: '/src/assets/images/dream_world_animated_1789747644910.jpg'
-      },
-      {
-        pageNumber: 2,
-        sceneTitle: 'The Pillow-Fort Castle',
-        textTemplate: 'Inside the great sleepy palace, giant lavender pillows smelled of chamomile. "Here," whispered the Dream Weaver, "every good thought becomes a pleasant tomorrow."',
-        defaultImage: '/src/assets/images/space_girl_scene_1789746496237.jpg'
-      }
+    format: 'bundle-3',
+    title: '3 Storybooks + eBooks',
+    subtitle: 'Family gift bundle',
+    price: 2099,
+    originalPrice: 3499,
+    bundleQuantity: 3,
+    includesEbook: true,
+    description: 'Three custom books for grandparents, home library, and birthday gifts.',
+    features: [
+      '3 hardcover books',
+      '3 eBooks',
+      'Free express shipping'
     ]
   },
   {
-    id: 'my-magical-birthday',
-    slug: 'my-magical-birthday',
-    title: 'My Magical Birthday',
-    subtitle: 'A once-in-a-lifetime birthday celebration crafted just for them.',
-    description: 'All the woodland creatures, balloon makers, and confectioners gather to throw the greatest surprise birthday party for your child, celebrating all the ways they have grown this year.',
-    coverImage: '/src/assets/images/birthday_animated_1789747658427.jpg',
-    ageRange: '2–4',
-    category: 'Birthday',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Bengali'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Ideal birthday gift that becomes an heirloom childhood keepsake',
-      'Highlights how much love family and friends hold for the child',
-      'Personalized with their exact new age and favorite treats'
-    ],
-    moralObjective: 'Gratitude, Self-Worth, and Family Joy',
-    featured: true,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Morning Surprise',
-        textTemplate: 'Sunbeams danced across {{childName}}’s room. Today wasn’t just any day—it was the day {{childName}} turned {{childAge}} years old!',
-        defaultImage: '/src/assets/images/birthday_animated_1789747658427.jpg'
-      },
-      {
-        pageNumber: 2,
-        sceneTitle: 'The Balloon Forest',
-        textTemplate: 'Ribbons in cheerful {{favoriteColor}} floated above a towering cake layered with sweet strawberry frosting. "Hip, hip, hooray for {{childName}}!" echoed all around.',
-        defaultImage: '/src/assets/images/birthday_animated_1789747658427.jpg'
-      }
-    ]
-  },
-  {
-    id: 'first-abc-adventure',
-    slug: 'my-first-abc-adventure',
-    title: 'My First ABC Adventure',
-    subtitle: 'From Astronaut to Zephyr—letters come alive with their name.',
-    description: 'Learning letters is an exhilarating quest when each alphabet leads to a whimsical discovery starring your child and their favorite animal friends.',
-    coverImage: '/src/assets/images/kabir_superhero_1789745987445.jpg',
-    ageRange: '2–4',
-    category: 'Learning',
-    pageCount: 32,
-    languages: ['English', 'Hindi'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Early phonics and letter recognition linked to familiar joy',
-      'Rich alliterative poetry that delights young ears',
-      'Builds foundational pre-reading confidence'
-    ],
-    moralObjective: 'Foundational Literacy and Joy of Learning',
-    featured: false,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'A is for Adventurer',
-        textTemplate: 'A is for {{childName}}, the daring Adventurer who climbed the Apple tree to catch an Amber balloon!',
-        defaultImage: '/src/assets/images/kabir_superhero_1789745987445.jpg'
-      }
-    ]
-  },
-  {
-    id: 'dinosaur-discovery',
-    slug: 'the-dinosaur-discovery',
-    title: 'The Dinosaur Discovery',
-    subtitle: 'Travel back in time to meet friendly prehistoric giants.',
-    description: 'Equipped with a magnifying glass and a field notebook, your little paleontologist travels back to the Jurassic era to help a lost baby Triceratops find its family.',
-    coverImage: '/src/assets/images/dino_animated_1789747671931.jpg',
-    ageRange: '4–6',
-    category: 'Adventure',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Introduces prehistoric geology and fossil science playfully',
-      'Teaches empathy by caring for a lost creature',
-      'Stimulates adventurous curiosity'
-    ],
-    moralObjective: 'Scientific Observation and Compassion',
-    featured: false,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Mysterious Footprint',
-        textTemplate: 'While digging in the garden, {{childName}} uncovered a footprint three times the size of their shoe! "Quick," they exclaimed, "the prehistoric portal is open!"',
-        defaultImage: '/src/assets/images/dino_animated_1789747671931.jpg'
-      }
-    ]
-  },
-  {
-    id: 'little-explorer',
-    slug: 'the-little-explorer',
-    title: 'The Little Explorer',
-    subtitle: 'Big wonders await right in your own backyard.',
-    description: 'You don’t need a spaceship to explore a brand-new world. With curiosity and care, your child discovers the busy city of ants, singing sparrows, and secret clover glades.',
-    coverImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
-    ageRange: '2–4',
-    category: 'Learning',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Encourages outdoor play and mindful observation of local fauna',
-      'Builds patience and attention to tiny everyday wonders',
-      'Strengthens nature connection away from digital screens'
-    ],
-    moralObjective: 'Patience, Wonder, and Environmental Mindfulness',
-    featured: false,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'Morning Dew Droplets',
-        textTemplate: 'The morning grass was cool and wet. {{childName}} bent down low to inspect a diamond water-drop resting upon an emerald leaf.',
-        defaultImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg'
-      }
-    ]
-  },
-  {
-    id: 'when-i-grow-up',
-    slug: 'when-i-grow-up',
-    title: 'When I Grow Up',
-    subtitle: 'Doctor, pilot, artist, chef—every dream is within their reach.',
-    description: 'Your child tries on different hats in a whimsical workshop where each profession lets them use their unique talents to spread happiness to others.',
-    coverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
-    ageRange: '6–8',
-    category: 'Confidence',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Marathi'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Broadens horizons and validates boundless childhood aspirations',
-      'Highlights that any career is an opportunity to help community',
-      'Builds unshakable confidence in their own unique potential'
-    ],
-    moralObjective: 'Self-Belief, Ambition, and Community Service',
-    featured: false,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Mirror of Possibilities',
-        textTemplate: 'Standing tall in front of the mirror, {{childName}} smiled. "Tomorrow holds so many adventures. Which dream shall I explore first?"',
-        defaultImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg'
-      }
-    ]
-  },
-  {
-    id: 'my-superhero-adventure',
-    slug: 'my-superhero-adventure',
-    title: 'My Superhero Adventure',
-    subtitle: 'The greatest superpower of all is a kind and helping heart.',
-    description: 'When the city clock tower loses its sparkle, your child dons their personalized hero cape. Their superpower isn’t laser vision—it’s kindness, clever teamwork, and spreading smiles.',
-    coverImage: '/src/assets/images/kabir_superhero_1789745987445.jpg',
-    ageRange: '4–6',
-    category: 'Confidence',
-    pageCount: 32,
-    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Bengali'],
-    formats: ['digital', 'paperback', 'hardcover'],
-    benefits: [
-      'Redefines heroism around empathy, bravery, and helping friends',
-      'Empowers shy children to speak up and lead with warmth',
-      'Action-packed while entirely non-violent and uplifting'
-    ],
-    moralObjective: 'Kindness, Teamwork, and Everyday Courage',
-    featured: true,
-    pages: [
-      {
-        pageNumber: 1,
-        sceneTitle: 'The Cape of Kindness',
-        textTemplate: 'Fastened with a gold pin, {{childName}}’s cape fluttered in the breeze. "Whenever someone needs a helping hand," they declared, "I am ready!"',
-        defaultImage: '/src/assets/images/kabir_superhero_1789745987445.jpg'
-      }
+    format: 'bundle-complete',
+    title: 'Complete Gift Bundle',
+    subtitle: 'Storybook + Coloring + Video',
+    badge: 'All-In-One',
+    popular: false,
+    price: 2499,
+    originalPrice: 3999,
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: 'Hardcover Storybook + Hardcover Coloring Book + Animated Video Keepsake.',
+    features: [
+      'Hardcover Storybook',
+      'Hardcover Coloring Book',
+      'Animated Video Story'
     ]
   }
 ];
 
-export const INITIAL_PRICING = [
+export const COLORING_PRICING: PricingPlan[] = [
   {
-    format: 'digital' as const,
-    title: 'Digital Keepsake Edition',
-    badge: 'Instant PDF Delivery',
+    format: 'digital-coloring',
+    title: 'Digital Coloring Book',
+    subtitle: 'eBook PDF Edition',
     price: 399,
-    originalPrice: 699,
-    description: 'Full 32-page high-resolution square PDF edition formatted for tablets, iPads, smartphones, and archival home printing.',
-    specifications: {
-      dimension: '8.5 × 8.5 inch',
-      pageCount: 32,
-      interior: 'Full-color interior (300 DPI)',
-      paperType: 'Digital print-ready CMYK PDF',
-      coverFinish: 'Full-color front & back cover spreads',
-      binding: 'Digital PDF eBook'
-    },
+    originalPrice: 599,
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: '24 printable high-resolution coloring pages featuring your child hero.',
     features: [
-      'Complete 32-page personalized picture book',
-      '8.5 × 8.5 inch square picture book format',
-      'Custom character created from child’s photo',
-      'Title, Dedication & "About our hero" pages included',
-      'Print-ready 300 DPI high-resolution PDF download',
-      'Instant access across tablets, iPads & phones'
-    ],
-    popular: false
+      '24 coloring pages',
+      'Personalized child hero',
+      'Printable infinite times'
+    ]
   },
   {
-    format: 'paperback' as const,
-    title: 'Verve Studio Paperback',
-    badge: 'Most Popular',
+    format: 'hardcover-coloring',
+    title: 'Hardcover Coloring Book',
+    subtitle: 'Thick bleed-resistant paper',
+    badge: 'Popular',
+    popular: true,
     price: 899,
     originalPrice: 1299,
-    description: 'Premium 8.5 × 8.5 inch square children’s book printed on thick white coated paper with a smooth matte laminated cover.',
-    specifications: {
-      dimension: '8.5 × 8.5 inch (21.59 × 21.59 cm)',
-      pageCount: 32,
-      interior: 'Full-color interior (Premium color)',
-      paperType: 'White coated paper (rich vibrant color reproduction)',
-      coverFinish: 'Matte laminated softcover',
-      binding: 'Perfect-bound paperback (Lulu standard)'
-    },
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: 'Hardcover spiral/lay-flat coloring book with 180 GSM artist coloring paper.',
     features: [
-      'Complete 32-page personalized picture book',
-      '8.5 × 8.5 inch standard square picture book format',
-      'Full-color interior with premium color saturation',
-      'White coated heavyweight paper (vibrant & tear-resistant)',
-      'Smooth matte laminated protective cover finish',
-      'Perfect-bound paperback binding built to lay flat',
-      'Page 3 dedication & Page 31 "About our hero" profile',
-      'Free 32-page digital PDF included immediately'
-    ],
-    popular: true
+      '24 personalized pages',
+      'Lay-flat binding',
+      'Thick non-bleed paper'
+    ]
   },
   {
-    format: 'hardcover' as const,
-    title: 'Premium Edition Hardcover',
-    badge: 'Heirloom Keepsake',
+    format: 'storybook-plus-coloring',
+    title: 'Storybook + Coloring Book',
+    subtitle: 'The Perfect Creative Pair',
+    badge: 'Combo Savings',
+    popular: false,
     price: 1499,
     originalPrice: 2199,
-    description: 'Museum-grade 8.5 × 8.5 inch heirloom case-wrap hardcover book crafted on thick white coated paper with matte lamination.',
-    specifications: {
-      dimension: '8.5 × 8.5 inch (21.59 × 21.59 cm)',
-      pageCount: 32,
-      interior: 'Full-color interior (Premium color)',
-      paperType: 'White coated heavy art paper',
-      coverFinish: 'Matte laminated case-wrap cover',
-      binding: 'Sturdy library casebound hardcover'
-    },
+    bundleQuantity: 2,
+    includesEbook: true,
+    description: 'Get both the full-color Hardcover Storybook and matching Coloring Book.',
     features: [
-      'Everything in Paperback included',
-      '8.5 × 8.5 inch heirloom case-wrap hardcover',
-      '3mm rigid library binding built to last for generations',
-      'Full-color interior on premium white coated paper',
-      'Silky matte laminated luxury cover finish',
-      'Milestone keepsake certificate & hero dedication',
-      'Presentation gift-wrap ready for birthday or festive giving',
-      'Priority print queue & insured door delivery across India'
-    ],
-    popular: false
+      '1 Hardcover Storybook',
+      '1 Hardcover Coloring Book',
+      'Both digital editions'
+    ]
+  },
+  {
+    format: 'storybook-plus-video',
+    title: 'Storybook + Video',
+    subtitle: 'Read & Watch Adventure',
+    price: 1699,
+    originalPrice: 2499,
+    bundleQuantity: 1,
+    includesEbook: true,
+    description: 'Hardcover Storybook + Personalized Animated Video with voice narration.',
+    features: [
+      'Hardcover Storybook',
+      'Animated narration video',
+      'Instant digital access'
+    ]
+  }
+];
+
+export const AR_ADDON_PLAN = {
+  title: 'Bring it to life (AR View)',
+  price: 399,
+  features: [
+    'Scan & watch animation',
+    'No app required',
+    'Works on any phone'
+  ]
+};
+
+export const COLORING_BOOK_PRODUCT = {
+  title: 'My Adventure Coloring Book',
+  subtitle: 'Same exciting story, now in an interactive coloring format! Perfect for little dreamers and creative minds.',
+  price: 499,
+  originalPrice: 799,
+  pageCount: 24,
+  format: 'Print + Digital',
+  coverImage: '/src/assets/images/storybook_mockup_animated_1789747788784.jpg',
+  previewPages: [
+    '/src/assets/images/space_boy_window_1789746542329.jpg',
+    '/src/assets/images/space_boy_scene_1789746482524.jpg',
+    '/src/assets/images/space_boy_planet_1789746509818.jpg'
+  ]
+};
+
+export const STORIES: Story[] = [
+  // =========================================================================
+  // 1. ADVENTURE & EXPLORATION
+  // =========================================================================
+  {
+    id: 'journey-to-the-stars',
+    slug: 'journey-to-the-stars',
+    title: 'Journey to the Stars',
+    subtitle: 'A cosmic adventure across constellations',
+    description: 'When {{childName}} finds a glowing star map, an ordinary bedroom turns into a launchpad across the galaxy. Will they chart the sapphire nebula and find the lost star?',
+    coverImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+    boyCoverImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+    girlCoverImage: '/src/assets/images/space_girl_scene_1789746496237.jpg',
+    ageRange: '4–6',
+    category: 'Adventure & Exploration',
+    purposeCategory: 'Adventure & Exploration',
+    occasions: ['Birthday', 'Just Because', 'Milestones'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Inspires scientific curiosity', 'Builds bedtime calm', 'Celebrates bravery'],
+    moralObjective: 'Courage, exploration, and the wonder of cosmic discovery.',
+    featured: true,
+    pages: [
+      {
+        pageNumber: 1,
+        sceneTitle: 'The Starlight Window',
+        textTemplate: 'One quiet evening, {{childName}} gazed out the bedroom window, spotting a brilliant sapphire star dancing across the sky.',
+        defaultImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        boyImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+        girlImage: '/src/assets/images/space_girl_window_1789746562044.jpg'
+      },
+      {
+        pageNumber: 2,
+        sceneTitle: 'Boarding the Starlight Vessel',
+        textTemplate: 'Dressed in an explorer suit, {{childName}} and a loyal companion stepped aboard the Starlight Cruiser ready to chart the forgotten galaxy.',
+        defaultImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+        boyImage: '/src/assets/images/space_boy_scene_1789746482524.jpg',
+        girlImage: '/src/assets/images/space_girl_scene_1789746496237.jpg'
+      },
+      {
+        pageNumber: 3,
+        sceneTitle: 'The Crystal Planet of Melodies',
+        textTemplate: 'The ship landed on a glowing violet moon where singing crystal formations chimed a cheerful welcome song whenever {{childName}} smiled.',
+        defaultImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
+        boyImage: '/src/assets/images/space_boy_planet_1789746509818.jpg',
+        girlImage: '/src/assets/images/space_girl_planet_1789746528883.jpg'
+      }
+    ]
+  },
+  {
+    id: 'the-brave-mountain-guide',
+    slug: 'the-brave-mountain-guide',
+    title: 'The Brave Mountain Guide',
+    subtitle: 'Himalayan courage & resilience',
+    description: 'High in the snow-kissed peaks, {{childName}} leads a team of lost mountain goats back to their warm valley through patience, grit, and careful pathfinding.',
+    coverImage: '/src/assets/images/mountain_adventure_cover_1789777025214.jpg',
+    ageRange: '6–8',
+    category: 'Adventure & Exploration',
+    purposeCategory: 'Adventure & Exploration',
+    occasions: ['Milestones', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Resilience and grit', 'Leadership under pressure', 'Animal compassion'],
+    moralObjective: 'Perseverance, steady calm, and guiding others with care.',
+    featured: false,
+    pages: []
+  },
+  {
+    id: 'the-enchanted-dragon-whisperer',
+    slug: 'the-enchanted-dragon-whisperer',
+    title: 'The Dragon Whisperer',
+    subtitle: 'A mystical mountain quest',
+    description: 'When a timid baby dragon loses its sparkle in the whispering canyon, {{childName}} offers gentle friendship and helps it find its inner light again.',
+    coverImage: '/src/assets/images/dragon_adventure_cover_1789777001745.jpg',
+    ageRange: '4–6',
+    category: 'Adventure & Exploration',
+    purposeCategory: 'Adventure & Exploration',
+    occasions: ['Birthday', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Overcoming fears', 'Gentle listening', 'Creative imagination'],
+    moralObjective: 'Understanding feelings, patience, and non-judgmental love.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 2. LEARNING & CURIOSITY
+  // =========================================================================
+  {
+    id: 'little-scientist',
+    slug: 'little-scientist',
+    title: 'Little Scientist & the Ocean Robot',
+    subtitle: 'STEM invention & marine discovery',
+    description: 'In a whimsical workshop filled with bubbling beakers and spinning gears, {{childName}} builds an eco-robot to protect colorful coral reefs and solve underwater mysteries.',
+    coverImage: '/src/assets/images/dream_world_animated_1789747644910.jpg',
+    ageRange: '6–8',
+    category: 'Learning & Curiosity',
+    purposeCategory: 'Learning & Curiosity',
+    occasions: ['Just Because', 'Milestones'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['STEM curiosity', 'Environmental consciousness', 'Creative problem-solving'],
+    moralObjective: 'Experimentation, persistence after mistakes, and caring for our planet.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'dinosaur-discovery',
+    slug: 'dinosaur-discovery',
+    title: 'Dinosaur Discovery Expedition',
+    subtitle: 'Prehistoric amber valley detective',
+    description: 'Equipped with a magnifying glass and field notebook, {{childName}} unearths friendly gentle giants in the prehistoric valley and unlocks the secret of glowing fossils.',
+    coverImage: '/src/assets/images/dino_animated_1789747671931.jpg',
+    ageRange: '4–6',
+    category: 'Learning & Curiosity',
+    purposeCategory: 'Learning & Curiosity',
+    occasions: ['Birthday', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Paleontology wonder', 'Teamwork and kindness', 'Observation skills'],
+    moralObjective: 'Respecting ancient history, curiosity, and peaceful problem-solving.',
+    featured: true,
+    pages: []
+  },
+
+  // =========================================================================
+  // 3. INDIAN CULTURE & HERITAGE
+  // =========================================================================
+  {
+    id: 'india-my-home',
+    slug: 'india-my-home',
+    title: 'India, My Home: The Great Rail Odyssey',
+    subtitle: 'A journey across India\'s wonders',
+    description: 'A breathtaking train voyage aboard the Golden Express! {{childName}} travels across Rajasthan palaces, lush Western Ghats, ancient temple corridors, and coastal backwaters.',
+    coverImage: '/src/assets/images/india_train_animated_1789747625174.jpg',
+    ageRange: '6–8',
+    category: 'Indian Culture & Heritage',
+    purposeCategory: 'Indian Culture & Heritage',
+    occasions: ['Festivals', 'Milestones', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Bengali', 'Marathi'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Celebrates Indian heritage', 'Geography and cultural pride', 'Unity in diversity'],
+    moralObjective: 'Pride in roots, cultural appreciation, and welcoming warmth.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'the-royal-fort-mystery',
+    slug: 'the-royal-fort-mystery',
+    title: 'The Royal Fort of Rajasthan',
+    subtitle: 'Ancient palaces & secret riddles',
+    description: 'While visiting majestic sandstone ramparts with grandparents, {{childName}} decodes musical clues hidden within ancient royal courtyards and miniature fresco paintings.',
+    coverImage: '/src/assets/images/wizard_adventure_cover_1789777013783.jpg',
+    ageRange: '6–8',
+    category: 'Indian Culture & Heritage',
+    purposeCategory: 'Indian Culture & Heritage',
+    occasions: ['Grandparents', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Marathi'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Architectural appreciation', 'Music and history connections', 'Analytical thinking'],
+    moralObjective: 'Valuing elder wisdom, safeguarding heritage, and inquisitive exploration.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 4. FESTIVAL & CELEBRATION
+  // =========================================================================
+  {
+    id: 'festival-of-lights',
+    slug: 'festival-of-lights',
+    title: 'The Festival of Radiant Lights',
+    subtitle: 'Diwali magic, clay diyas & joy',
+    description: 'As twilight falls, {{childName}} helps arrange golden clay lamps, draws a dazzling peacock rangoli, and brings festive sweets to brighten the whole neighborhood.',
+    coverImage: '/src/assets/images/ananya_watercolor_1789745975618.jpg',
+    ageRange: '4–6',
+    category: 'Festival & Celebration',
+    purposeCategory: 'Festival & Celebration',
+    occasions: ['Festivals', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Bengali'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Celebrates Diwali traditions', 'Sharing and togetherness', 'Creativity with rangoli'],
+    moralObjective: 'Triumph of light, generosity, and sharing happiness with every home.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'colors-of-joy-holi',
+    slug: 'colors-of-joy-holi',
+    title: 'The Grand Colors of Joy (Holi)',
+    subtitle: 'Spring blooms, laughter & harmony',
+    description: 'When spring arrives, {{childName}} gathers friends for a vibrant celebration with natural herbal colors, singing folk melodies, and embracing new beginnings.',
+    coverImage: '/src/assets/images/kid_girl_meera_1789747560780.jpg',
+    ageRange: '4–6',
+    category: 'Festival & Celebration',
+    purposeCategory: 'Festival & Celebration',
+    occasions: ['Festivals', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Spring celebration', 'Forgiveness and new friendships', 'Joy of play'],
+    moralObjective: 'Harmony, playfulness, forgiveness, and welcoming the beauty of spring.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 5. VALUE & KINDNESS
+  // =========================================================================
+  {
+    id: 'the-kindness-quest',
+    slug: 'the-kindness-quest',
+    title: 'The Kindness Quest in Silver Forest',
+    subtitle: 'Small acts of empathy that spark light',
+    description: 'Through an enchanted whispering grove, {{childName}} discovers that simple everyday acts of generosity bring glowing blossoms back to the sleepy forest.',
+    coverImage: '/src/assets/images/jungle_boy_trail_1789746581206.jpg',
+    ageRange: '4–6',
+    category: 'Value & Kindness',
+    purposeCategory: 'Value & Kindness',
+    occasions: ['Just Because', 'Milestones'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Empathy and emotional quotient', 'Gentle friendship building', 'Selflessness'],
+    moralObjective: 'Empathy, compassion, and the ripple power of unconditional kindness.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'the-honest-little-baker',
+    slug: 'the-honest-little-baker',
+    title: 'The Honest Little Baker',
+    subtitle: 'Integrity, teamwork & sharing',
+    description: 'While baking warm cardamom buns for the village fair, {{childName}} learns the value of honesty, helping hands, and sharing treats with those in need.',
+    coverImage: '/src/assets/images/kid_boy_aarav_1789747514421.jpg',
+    ageRange: '4–6',
+    category: 'Value & Kindness',
+    purposeCategory: 'Value & Kindness',
+    occasions: ['Just Because', 'Milestones'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Honesty and truthfulness', 'Sharing with community', 'Patience in craft'],
+    moralObjective: 'Integrity in small actions, generosity, and thoughtful community care.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 6. BEDTIME & CALMING
+  // =========================================================================
+  {
+    id: 'the-slumber-cloud-river',
+    slug: 'the-slumber-cloud-river',
+    title: 'The Slumber Cloud & Moonbeam River',
+    subtitle: 'Tranquil rhythms for peaceful sleep',
+    description: 'Floating gently down a river of soft starlight, {{childName}} practices rhythmic deep breaths alongside yawning owls and drifting cloud sheep into dreamland.',
+    coverImage: '/src/assets/images/space_girl_window_1789746562044.jpg',
+    ageRange: '2–4',
+    category: 'Bedtime & Calming',
+    purposeCategory: 'Bedtime & Calming',
+    occasions: ['New Baby', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Soothing bedtime routine', 'Mindful breath awareness', 'Overcoming night fears'],
+    moralObjective: 'Peace of mind, gentle safety, and sweet restful sleep.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'goodnight-little-astronaut',
+    slug: 'goodnight-little-astronaut',
+    title: 'Goodnight, Little Dreamer',
+    subtitle: 'A cozy starlight lullaby',
+    description: 'After a big day of playing and learning, {{childName}} tucks in the twinkling stars, turns off cosmic lanterns, and snuggles into a cozy blanket of dreams.',
+    coverImage: '/src/assets/images/space_boy_window_1789746542329.jpg',
+    ageRange: '2–4',
+    category: 'Bedtime & Calming',
+    purposeCategory: 'Bedtime & Calming',
+    occasions: ['Just Because', 'New Baby'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Calm wind-down cues', 'Emotional comfort', 'Positive bedtime association'],
+    moralObjective: 'Contentment, feeling loved and protected through the quiet night.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 7. BIRTHDAY & MILESTONE
+  // =========================================================================
+  {
+    id: 'birthday-adventure',
+    slug: 'birthday-adventure',
+    title: 'The Great Birthday Balloon Adventure',
+    subtitle: 'A special day, a soaring dream',
+    description: 'Today is {{childName}}’s special birthday! A playful rainbow balloon express arrives to whisk our birthday hero away to the Land of Big Dreams and joyous surprises.',
+    coverImage: '/src/assets/images/birthday_animated_1789747658427.jpg',
+    ageRange: '4–6',
+    category: 'Birthday & Milestone',
+    purposeCategory: 'Birthday & Milestone',
+    occasions: ['Birthday', 'Return Gifts'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Self-esteem and joy', 'Cherished milestone memory', 'Emotional warmth'],
+    moralObjective: 'Gratitude, celebrating growth, and sharing joy with loved ones.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'first-day-at-big-school',
+    slug: 'first-day-at-big-school',
+    title: 'First Day of Big School Champion',
+    subtitle: 'Confidence, new friendships & bravery',
+    description: 'With a colorful new backpack and butterflies in the tummy, {{childName}} steps into the classroom and discovers that making new friends is the best adventure yet.',
+    coverImage: '/src/assets/images/first_day_school_cover_1789776989408.jpg',
+    ageRange: '4–6',
+    category: 'Birthday & Milestone',
+    purposeCategory: 'Birthday & Milestone',
+    occasions: ['Milestones', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Overcoming school anxiety', 'Social confidence', 'Excitement for learning'],
+    moralObjective: 'Courage to try new things, friendliness, and self-belief.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 8. SPIRITUAL & MYTHOLOGY
+  // =========================================================================
+  {
+    id: 'little-hanuman-sun-quest',
+    slug: 'little-hanuman-sun-quest',
+    title: 'The Adventures of Little Hanuman',
+    subtitle: 'Playful courage, devotion & boundless energy',
+    description: 'Joining the brave little vanara hero, {{childName}} leaps across soft golden clouds, learns about selfless strength, and discovers the superpower of a loving heart.',
+    coverImage: '/src/assets/images/aarav_magical_3d_1789745946003.jpg',
+    ageRange: '4–6',
+    category: 'Spiritual & Mythology',
+    purposeCategory: 'Spiritual & Mythology',
+    occasions: ['Festivals', 'Milestones', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu', 'Kannada', 'Marathi'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Values from Indian mythology', 'Inner strength and modesty', 'Loyalty and protection'],
+    moralObjective: 'Humble strength, devotion, and using power to protect and uplift others.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'the-flute-of-the-peacock-meadow',
+    slug: 'the-flute-of-the-peacock-meadow',
+    title: 'The Magical Flute of Vrindavan',
+    subtitle: 'Nature\'s harmony, peacocks & gentle melody',
+    description: 'Under the shade of the ancient Kadamba tree, {{childName}} listens to an enchanted bamboo flute that teaches all forest creatures to dance together in peaceful harmony.',
+    coverImage: '/src/assets/images/style_3d_magical_1789745962568.jpg',
+    ageRange: '4–6',
+    category: 'Spiritual & Mythology',
+    purposeCategory: 'Spiritual & Mythology',
+    occasions: ['Festivals', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Telugu'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Musical appreciation', 'Mindfulness in nature', 'Gentleness with animals'],
+    moralObjective: 'Joy in simplicity, connection to nature, and living in peaceful harmony.',
+    featured: false,
+    pages: []
+  },
+
+  // =========================================================================
+  // 9. ANIMALS & NATURE
+  // =========================================================================
+  {
+    id: 'secret-jungle-safari',
+    slug: 'secret-jungle-safari',
+    title: 'The Secret Jungle Safari',
+    subtitle: 'Rainforest wonders & elephant friends',
+    description: 'Guiding through emerald canopy trails, {{childName}} spots playful langurs, tracks gentle elephant herds, and helps plant a sacred banyan sapling.',
+    coverImage: '/src/assets/images/jungle_book_mockup_1789747803839.jpg',
+    ageRange: '4–6',
+    category: 'Animals & Nature',
+    purposeCategory: 'Animals & Nature',
+    occasions: ['Birthday', 'Just Because'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil', 'Kannada'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Wildlife conservation', 'Love for animals', 'Outdoor curiosity'],
+    moralObjective: 'Protecting habitats, coexisting with animals, and appreciating biodiversity.',
+    featured: true,
+    pages: []
+  },
+  {
+    id: 'the-dolphin-bay-guardian',
+    slug: 'the-dolphin-bay-guardian',
+    title: 'The Ocean Guardian & Dolphin Bay',
+    subtitle: 'Coastal cleaning & marine friendship',
+    description: 'Along golden sandy shores, {{childName}} teams up with a cheerful pod of coastal dolphins to clean up floating plastic and protect delicate sea turtles.',
+    coverImage: '/src/assets/images/jungle_girl_trail_1789746597642.jpg',
+    ageRange: '6–8',
+    category: 'Animals & Nature',
+    purposeCategory: 'Animals & Nature',
+    occasions: ['Just Because', 'Milestones'],
+    pageCount: 32,
+    languages: ['English', 'Hindi', 'Tamil'],
+    formats: ['digital', 'hardcover', 'bundle-2', 'bundle-3'],
+    benefits: ['Ocean conservation', 'Community action', 'Marine biology excitement'],
+    moralObjective: 'Responsibility for clean oceans, empathy for marine life, and proactive care.',
+    featured: false,
+    pages: []
   }
 ];

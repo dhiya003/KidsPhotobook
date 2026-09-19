@@ -189,10 +189,10 @@ export const MyStoriesView: React.FC<MyStoriesViewProps> = ({
                     {/* Character vs photo avatars */}
                     <div className="relative">
                       <div className="w-16 h-16 rounded-2xl overflow-hidden border-2 border-[#EB5E44] shadow-md bg-[#162032]">
-                        <img src={char.characterIllustrationUrl} alt={char.name} className="w-full h-full object-cover" />
+                        <img src={char.canonicalCharacterPortraitUrl || char.photoUrl} alt={char.name} className="w-full h-full object-cover" />
                       </div>
                       <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-white shadow-md absolute -bottom-2 -right-2 bg-black">
-                        <img src={char.referenceImageUrl} alt="Original" className="w-full h-full object-cover" />
+                        <img src={char.photoUrl} alt="Original" className="w-full h-full object-cover" />
                       </div>
                     </div>
 

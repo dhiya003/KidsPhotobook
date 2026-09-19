@@ -1,6 +1,6 @@
 {
   "name": "Verve Studio",
-  "description": "Make your child the hero of their own story. India-first personalized children's storytelling and learning platform.",
+  "description": "Make your child the hero of their own story. Personalized storybooks, beautifully illustrated with your child's face, dreams and imagination.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
